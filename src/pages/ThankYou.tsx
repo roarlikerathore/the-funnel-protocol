@@ -4,6 +4,7 @@ import { funnel } from '@/funnel.config'
 import { trackOnce, trackCustom, restoreIdentity } from '@/lib/pixel'
 import { getLeadFirstName } from '@/lib/lead'
 import Footer from '@/components/Footer'
+import VideoBlock from '@/components/sections/VideoBlock'
 
 export default function ThankYou({ bought }: { bought: 'none' | 'upsell' | 'downsell' }) {
   const name = getLeadFirstName()
@@ -57,6 +58,8 @@ export default function ThankYou({ bought }: { bought: 'none' | 'upsell' | 'down
               </ul>
             </div>
           )}
+
+          <VideoBlock which="thankYou" title="Watch this before we start" />
 
           <div className="space-y-5">
             {steps.map((s, i) => (

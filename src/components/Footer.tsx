@@ -2,7 +2,7 @@ import { funnel } from '@/funnel.config'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[hsl(var(--border))] px-4 py-10 text-center">
+    <footer className="border-t border-[hsl(var(--border))] px-4 pb-28 pt-10 text-center md:pb-10">
       <nav className="mb-4 text-sm text-[hsl(var(--muted))]">
         {[['Terms', '/terms'], ['Privacy', '/privacy'],
           ['Refunds', '/refund'], ['Disclaimer', '/disclaimer']].map(([label, href], i) => (

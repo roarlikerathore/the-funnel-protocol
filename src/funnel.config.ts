@@ -26,6 +26,8 @@ export interface Speaker  { name: string; role: string; bio: string; photo?: str
 export interface Method   { number: number; title: string; description: string }
 export interface Bonus    { name: string; worth: string; description?: string; image?: string }
 export interface RewardTier { referrals: number; reward: string }
+export interface ValueItem  { name: string; worth: number }
+export interface Benefit    { title: string; description: string }
 
 export interface FunnelConfig {
   brand: {
@@ -47,6 +49,8 @@ export interface FunnelConfig {
   event: {
     name: string
     days: number
+    /** Shown in the hero facts strip, e.g. "English" or "Hindi + English". */
+    language?: string
     /** ISO date, YYYY-MM-DD, of night one. */
     startDate: string
     /** 24h local time, HH:MM. */
@@ -121,6 +125,29 @@ export interface FunnelConfig {
     urgency?: { seatsTotal?: number; closesAt?: string; line?: string }
     /** Referral rewards. Needs the referrals table, which SETUP.sql creates. */
     rewards?: RewardTier[]
+
+    /**
+     * Collapse everything below the hero behind one button.
+     * People who are already sold register from the hero and never scroll. People
+     * who need convincing choose to open it. Nobody is made to scroll past
+     * arguments they did not ask for.
+     */
+    foldBelowHero?: boolean
+
+    /** Follows the reader down the page once the fold is open. */
+    stickyBar?: boolean
+
+    /** Short line under the hero CTA. Real reasons only. */
+    urgencyLine?: string
+
+    /** What implementing this actually changes for them. */
+    benefits?: Benefit[]
+
+    /** Adds up what the free seat is worth. Every number must be defensible. */
+    valueStack?: { items: ValueItem[]; currency: string }
+
+    /** Embed URLs. Empty means that video block is skipped. */
+    videos?: { landing?: string; thankYou?: string }
   }
 
   tracking: {
@@ -177,6 +204,7 @@ export const funnel: FunnelConfig = {
     timezone: 'Asia/Kolkata',
     durationMinutes: 120,
     platform: 'Zoom',
+    language: 'English',
     joinUrl: 'https://example.com/join',
     isFree: true,
   },

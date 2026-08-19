@@ -35,6 +35,24 @@ export default function Hero({ onRegister }: { onRegister: () => void }) {
           {funnel.promise.subheadline}
         </p>
 
+        {/* Four facts, answered before they are asked. Removing the small
+            unknowns is most of what stops someone registering. */}
+        <div className="mx-auto mb-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            ['Date', dateLabel()],
+            ['Time', timeLabel()],
+            ['Language', funnel.event.language || 'English'],
+            ['Length', `${Math.round(funnel.event.durationMinutes / 60)} hrs`],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-lg border border-[hsl(var(--border))]
+                                        bg-[hsl(var(--card))] px-3 py-3">
+              <div className="text-[10px] font-semibold uppercase tracking-wider
+                              text-[hsl(var(--muted))]">{label}</div>
+              <div className="mt-0.5 font-bold leading-tight">{value}</div>
+            </div>
+          ))}
+        </div>
+
         <div className="mb-8"><Countdown /></div>
 
         <button onClick={onRegister}
@@ -43,8 +61,13 @@ export default function Hero({ onRegister }: { onRegister: () => void }) {
           Save my free seat
         </button>
 
-        <p className="mt-4 text-sm text-[hsl(var(--muted))]">
-          {dateLabel()} · {timeLabel()} · on {funnel.event.platform}
+        {funnel.sections.urgencyLine && (
+          <p className="mt-4 text-sm font-semibold text-[hsl(var(--accent))]">
+            {funnel.sections.urgencyLine}
+          </p>
+        )}
+        <p className="mt-2 text-sm text-[hsl(var(--muted))]">
+          Live on {funnel.event.platform}
         </p>
       </div>
     </section>
