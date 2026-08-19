@@ -117,3 +117,51 @@ export const trackOnce = (
   if (custom) trackCustom(event, data);
   else trackPixel(event, data);
 };
+
+
+/**
+ * Injects the Meta Pixel snippet. Safe to call more than once, and does nothing
+ * when no pixel id is configured, so an unconfigured funnel stays silent rather
+ * than firing events into a void.
+ */
+export const initPixel = () => {
+  if (!PIXEL_ID || typeof window === "undefined" || window.fbq) return;
+  /* eslint-disable */
+  (function (f: any, b, e, v, n?: any, t?: any, s?: any) {
+    if (f.fbq) return; n = f.fbq = function () {
+      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+    };
+    if (!f._fbq) f._fbq = n;
+    n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
+    t = b.createElement(e); t.async = true; t.src = v;
+    s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s);
+  })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+  /* eslint-enable */
+  // Read through a fresh reference: the snippet above assigns window.fbq, but
+  // the early return has already narrowed the original binding to undefined.
+  (window as Window).fbq?.("init", PIXEL_ID);
+};
+
+/**
+ * Fires once per depth per page. Depth is where a page loses people, which is the
+ * only reliable way to know which section needs rewriting.
+ * Returns a cleanup function, so it can be used directly inside useEffect.
+ */
+export const trackScrollDepth = (path: string) => {
+  if (typeof window === "undefined") return () => {};
+  const hit = new Set<number>();
+  const onScroll = () => {
+    const doc = document.documentElement;
+    const scrollable = doc.scrollHeight - window.innerHeight;
+    if (scrollable <= 0) return;
+    const pct = Math.round((window.scrollY / scrollable) * 100);
+    for (const mark of [25, 50, 75, 100]) {
+      if (pct >= mark && !hit.has(mark)) {
+        hit.add(mark);
+        trackCustom("ScrollDepth", { depth: mark, path });
+      }
+    }
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  return () => window.removeEventListener("scroll", onScroll);
+};

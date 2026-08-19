@@ -1,39 +1,48 @@
 # Build status
 
-## Done — the system scaffolding
+## The template builds and runs
 
-| File | What it is |
+`bun install && bun run build` passes. Entry bundle 9.8 kB gzipped; the Control
+Room is lazily loaded so a visitor never downloads it.
+
+## Three ways in, all landing at the same funnel
+
+| Path | Needs | Lovable credits |
+|---|---|---|
+| A | Lovable + Claude Code | 1-2 |
+| B | GitHub + Supabase + Vercel + Claude Code | zero |
+| C | Lovable only, no Claude Code | ~5-10 |
+
+Path C works because the template already contains every page and every email.
+Nothing is built, only filled in, and filling in means editing one file.
+
+## Shipping
+
+| Area | State |
 |---|---|
-| `RUN-THIS.md` | **The single executable.** Two prompts, nothing else |
-| `README.md` | What it is, and why Lovable barely participates |
-| `prompts/01-lovable-seed.md` | The 1-2 credit seed prompt |
-| `prompts/02-claude-bootstrap.md` | The prompt that hands the build to Claude Code |
-| `intake/funnel-brief.md` | 10-section brief covering every niche-specific input |
-| `blueprint/00-BUILD-ORDER.md` | The build contract Claude Code follows |
-| `tutorial/tutorial.html` | The illustrated walkthrough |
-| `REPO-MODEL.md` | How a buyer's repo stays sealed off from the live one |
-| `scripts/scan-for-leaks.sh` | Fails the build if anything private survived the port |
+| `RUN-THIS.md` | All three paths, prompts ready to paste |
+| `src/funnel.config.ts` | Typed schema, single source of niche truth |
+| `src/theme.ts` | Two colours in, full palette out |
+| Landing page | Hero, pain, stats, sessions, who for, proof, FAQ, final CTA, footer |
+| Registration | 3 step popup, no Radix, no Reduce Motion bug |
+| Offer pages | One component serves upsell and downsell |
+| Thank you | One component serves all three post-registration states |
+| Legal | Terms, privacy, refund, disclaimer, generated from config |
+| Preferences | Unsubscribe without a login, as the law expects |
+| Replay, Closed | Built |
+| Control Room | OTP login, leads, email queue, settings |
+| Database | 20 tables, RLS, seeds, cron, one paste |
+| Email engine | 9 templates, 26 blocks, generator tested on a second niche |
+| Tracking | Pixel with advanced matching, scroll depth, page views |
+| Edge functions | enqueue-sequence, process-email-queue, email-track, ai-calls, control-room-otp |
+| Leak scanner | Passing, and running in CI |
 
-## Done — the spine of the template
+## Not done
 
-| File | What it is |
-|---|---|
-| `templates/src/funnel.config.ts` | The typed schema every page and email reads from |
-| `templates/sql/01-schema.sql` | 20 tables, RLS, indexes. Static, niche-agnostic |
-| `templates/sql/02-seeds.sql.tpl` | Settings, sequences, blocks. Tokens filled from config |
-| `templates/sql/03-cron.sql.tpl` | Four scheduled jobs |
-
-Concatenated by the build into a single `SETUP.sql` the user pastes once.
-
-## Not done — the React and function layer
-
-Order to port:
-1. Theme deriver: config colours to CSS custom properties
-2. Landing sections + the 3-step registration popup
-4. Upsell / downsell / thank-you / replay / legal pages
-5. Email engine: 9 templates, 4 block types, the variant resolver
-6. WhatsApp queue + provider adapters + the templates to submit to Meta
-7. AI calling, with the plain-language script that survives moderation
-8. Pixel + edge functions
-9. Control Room
-10. Back office webhook seam, shipped switched off
+- **WhatsApp worker.** Tables and blueprint exist; `process-whatsapp-queue` does not.
+- **Attendance routing.** `day_after_attended` vs `day_after_missed` needs the
+  webinar platform's attendee list to choose between them.
+- **Back office webhook.** Blueprint stage 9, deliberately unbuilt.
+- **A real end-to-end run.** Nobody has yet taken an empty Lovable project all the
+  way to a live funnel with this. Until someone does, the 15 minute claim is a
+  projection, not a measurement.

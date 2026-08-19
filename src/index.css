@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fallbacks only. src/theme.ts overwrites every one of these at startup from
+   funnel.config, so a missing theme degrades to something readable rather than
+   to unstyled markup. */
+:root {
+  --background: 0 0% 100%; --foreground: 222 20% 11%;
+  --card: 0 0% 100%; --muted: 215 14% 42%; --border: 214 16% 88%;
+  --primary: 214 52% 25%; --accent: 43 66% 47%;
+  --success: 152 55% 42%; --danger: 0 72% 51%;
+}
+
+* { border-color: hsl(var(--border)); }
+html { scroll-behavior: smooth; }
+body { background: hsl(var(--background)); color: hsl(var(--foreground)); }
+
+.text-balance { text-wrap: balance; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

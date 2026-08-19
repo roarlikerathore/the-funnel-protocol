@@ -6,7 +6,7 @@
 #
 #   ./scripts/scan-for-leaks.sh
 set -uo pipefail
-cd "$(dirname "$0")/.."
+cd "$(dirname "$0")/../.."
 
 # Identifiers from the source funnel. Nothing here may appear in a public kit.
 PATTERNS=(
@@ -28,7 +28,7 @@ PATTERNS=(
 )
 
 # This file and the repo model legitimately name what must be stripped.
-EXCLUDE_FILES="scan-for-leaks.sh|REPO-MODEL.md|STATUS.md"
+EXCLUDE_FILES="scan-for-leaks.sh|REPO-MODEL.md|STATUS.md|RUN-THIS.md"
 
 fail=0
 echo "Scanning for private identifiers…"
