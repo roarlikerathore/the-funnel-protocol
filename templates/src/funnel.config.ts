@@ -93,6 +93,12 @@ export interface FunnelConfig {
     replay?: string
   }
 
+  tracking: {
+    /** Empty disables the pixel rather than firing events into nowhere. */
+    metaPixelId?: string
+    googleAnalyticsId?: string
+  }
+
   messaging: {
     /** Minutes to wait before the confirmation, so the upsell has resolved first. */
     confirmDelayMinutes: number
@@ -171,6 +177,8 @@ export const funnel: FunnelConfig = {
   theme: { primary: '#1E3A5F', accent: '#C9A227', mode: 'dark', mood: ['clear', 'direct'] },
 
   links: {},
+
+  tracking: {},
 
   messaging: {
     confirmDelayMinutes: 5,
