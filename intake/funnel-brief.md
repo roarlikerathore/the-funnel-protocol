@@ -22,6 +22,7 @@ testimonial to fill a gap — a fake result is the fastest way to lose a room.
 | Domain you will use | |
 | Support email address | |
 | WhatsApp group link (or SKIP) | |
+| Will you message people on WhatsApp? | |
 
 **Your credibility, in your own words.** Two or three sentences. What have you
 actually done that makes you worth two hours of a stranger's evening? Real things
@@ -37,7 +38,7 @@ only — numbers you can defend, years you actually spent.
 
 | Field | Your answer | Example |
 |---|---|---|
-| Event name | | "Money Heist Protocol" |
+| Event name | | "The Profit Blueprint" |
 | How many days | | 3 |
 | Start date (YYYY-MM-DD) | | 2026-09-15 |
 | Start time, local | | 20:00 |
@@ -205,7 +206,42 @@ hosting dashboard yourself — Claude tells you exactly where when the time come
 | Resend | Account + a verified sending domain | |
 | Webinar platform | The join link | |
 | Calendar | "Add to calendar" link | |
-| AI reminder calls | Optional, skip for v1 | |
+| WhatsApp | See below | |
+| AI reminder calls | See below | |
+
+---
+
+### WhatsApp
+
+Usually the highest-response channel outside the US, so it is built either way.
+Leave this blank and it ships switched off, ready for later.
+
+| Field | Your answer |
+|---|---|
+| Provider, if you have one | |
+| Business number | |
+| Group invite link | |
+
+> WhatsApp does not let a business send free text to someone who has not messaged
+> first. Every reminder has to be a template Meta approved in advance, and approval
+> takes hours to days. Claude writes the templates for you to submit — start that
+> early, because it is the one part of this nobody can speed up.
+
+### AI reminder calls
+
+A short automated call before you go live. It lifts attendance more than any email,
+and it is off unless you turn it on.
+
+| Field | Your answer | Default |
+|---|---|---|
+| Want calls? | | No |
+| Minutes before the event | | 30 |
+| Country code | | |
+
+> Voice providers moderate scripts harder than you would guess. Words like "steal",
+> anything sounding like a money guarantee, and unverifiable claims like "the top 3%"
+> get rejected. The call script is written plainly for that reason — none of your
+> funnel's theatre survives into it, deliberately.
 
 ---
 

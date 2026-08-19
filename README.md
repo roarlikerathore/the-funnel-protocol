@@ -3,7 +3,7 @@
 A complete webinar / event / seminar funnel, rebuilt for any niche in about 15 minutes,
 by someone who has never written a line of code.
 
-It is the Money Heist Protocol funnel with every niche-specific word pulled out into a
+It is a funnel proven on live traffic, with every niche-specific word pulled out into a
 single config file. You answer questions, Claude writes the config, the funnel appears.
 
 ## Why it is built this way
@@ -29,15 +29,19 @@ Claude edits GitHub, Lovable notices and redeploys itself. That is the whole tri
 5. **Answer the questions.** Claude interviews you, or you fill `intake/funnel-brief.md` first.
 6. **Paste one SQL file** into Lovable's database editor. Done.
 
-Full walkthrough with screenshots: `tutorial/`
+Full walkthrough: `tutorial/tutorial.html`
+How the repos stay separate: `REPO-MODEL.md`
 
 ## What you end up with
 
 - Landing page, registration popup with a 3-step qualifier, upsell, downsell,
   3 thank-you pages, 3 replay pages, closed page, legal pages, admin control room
 - 9 personalised emails that adapt to who registered and what they bought
+- WhatsApp reminders on the same schedule, provider-agnostic
+- AI reminder calls before you go live, off unless you switch them on
 - Meta Pixel with advanced matching, scroll depth and click tracking
-- AI reminder calls, countdown timers, affiliate/referral tracking
+- Countdown timers, affiliate and referral tracking
+- A webhook seam for your own back office, built and left disconnected
 - Your own copy, your own colours, your own offer
 
 ## What you still have to bring

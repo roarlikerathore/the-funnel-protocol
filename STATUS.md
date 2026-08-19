@@ -10,6 +10,8 @@
 | `intake/funnel-brief.md` | 10-section brief covering every niche-specific input |
 | `blueprint/00-BUILD-ORDER.md` | The build contract Claude Code follows |
 | `tutorial/tutorial.html` | The illustrated walkthrough |
+| `REPO-MODEL.md` | How a buyer's repo stays sealed off from the live one |
+| `scripts/scan-for-leaks.sh` | Fails the build if anything private survived the port |
 
 ## Not done — the template code
 
@@ -27,5 +29,8 @@ Order to port:
 3. Landing sections + the 3-step registration popup
 4. Upsell / downsell / thank-you / replay / legal pages
 5. Email engine: 9 templates, 4 block types, the variant resolver
-6. Pixel + edge functions
-7. Control Room
+6. WhatsApp queue + provider adapters + the templates to submit to Meta
+7. AI calling, with the plain-language script that survives moderation
+8. Pixel + edge functions
+9. Control Room
+10. Back office webhook seam, shipped switched off

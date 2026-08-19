@@ -49,6 +49,7 @@ One file: `SETUP.sql` at the repo root. The user pastes it once.
 Tables: `site_settings`, `page_toggles`, `page_views`, `funnel_events`,
 `conversions`, `referrals`, `email_sequences`, `email_templates`, `email_blocks`,
 `email_queue`, `email_logs`, `email_preferences`, `email_link_clicks`,
+`whatsapp_templates`, `whatsapp_queue`, `whatsapp_logs`,
 `admin_secrets`, `admin_otp`, `call_logs`.
 
 Rules that are not negotiable:
@@ -106,7 +107,68 @@ Two rules that matter more than the copy:
    (`mail.theirdomain.com`), reply-to points at their real inbox. Explain why:
    a spam complaint should not poison the domain their actual mail comes from.
 
-## Stage 5 — Tracking
+## Stage 5 — WhatsApp
+
+For most audiences outside the US this outperforms email, so build it even if the
+user has no provider yet. The functionality ships; the connector is a setting.
+
+Mirror the email engine rather than inventing a second architecture:
+
+| Email | WhatsApp |
+|---|---|
+| `email_queue` | `whatsapp_queue` |
+| `email_templates` | `whatsapp_templates` |
+| `process-email-queue` | `process-whatsapp-queue` |
+| `site_settings.email_provider` | `site_settings.whatsapp_provider` |
+
+Provider is a **setting, never a hardcoded API**. Ship three adapters behind one
+interface — `cloud_api` (Meta direct), `bsp` (AiSensy, Interakt, Wati and similar,
+all of which take a token plus an endpoint), and `backoffice` (see stage 9). Adding
+a fourth must never mean touching a page or a queue.
+
+Messages, keyed to the same moments the emails use: confirmation, 2 hours before,
+doors open, we are live, and a post-event follow-up.
+
+> **The rule that breaks builds if you skip it.** WhatsApp does not let a business
+> start a conversation with free text. Anything sent outside a 24 hour window after
+> the user's own last message must be a **template approved in advance by Meta**,
+> and approval takes hours to days. So: write the templates, submit them, and design
+> the funnel to work if approval has not landed yet. Never let a WhatsApp failure
+> block a registration or hold up an email.
+
+Store consent. The registration form must carry an explicit WhatsApp opt-in, and
+`whatsapp_opted_in` travels with the lead. Sending without it is illegal in several
+of the markets this kit will be used in.
+
+## Stage 6 — AI reminder calls
+
+Optional, off by default, and worth it: a voice reminder shortly before the event
+lifts attendance more than any email in the sequence.
+
+One function, five actions: `get_config`, `save_config`, `queue_lead`, `run_queue`,
+`sync_calls`. Calls land in `call_logs` with status, duration and provider id.
+
+Settings: agent id, lead time in minutes (default **30**), country code, enabled,
+auto-call new leads, number pool.
+
+Two behaviours that are not obvious:
+
+1. **Late registrants call immediately.** If someone registers after the calling
+   window has already opened, they are queued for now, not for a moment that has
+   passed. `scheduledAt = now > windowOpens ? now : windowOpens`.
+2. **The API key is masked on read.** `get_config` returns the last four characters
+   only. It lives in `admin_secrets`, never in `site_settings`, and the admin UI
+   never receives the whole value.
+
+> **Voice providers run content moderation, and it is stricter than you expect.**
+> Scripts get rejected for words that are harmless in context: heist, steal, or
+> anything reading as a financial guarantee ("without risking your own money"),
+> and unverifiable superlatives ("the top 3%"). Write the call script in plain,
+> literal language with none of the funnel's theatre. If the user's brand name
+> itself trips it, the call says the event name instead. Warn them at the point
+> they configure it, not after a rejection.
+
+## Stage 7 — Tracking
 
 Meta Pixel with advanced matching — hashed email, phone, name, external_id. This
 is the single biggest lever on ad cost and it is free to do properly.
@@ -117,14 +179,43 @@ anywhere a refresh can repeat it — use a sessionStorage guard.
 
 Also capture scroll depth (25/50/75/100), CTA clicks, video plays, time on page.
 
-## Stage 6 — Edge functions
+## Stage 8 — Edge functions
 
-`enqueue-sequence`, `process-email-queue`, `email-track`, `control-room-otp`,
-plus the webinar registration one if their platform has an API.
+`enqueue-sequence`, `process-email-queue`, `process-whatsapp-queue`, `email-track`,
+`control-room-otp`, `ai-calls`, plus the webinar registration one if their platform
+has an API.
 
-Scheduling: two cron jobs. The user pastes them with SETUP.sql.
+Scheduling, all in SETUP.sql so the user pastes once:
 
-## Stage 7 — Hand off
+| Job | Every | Why |
+|---|---|---|
+| send due email | 1 min | "we are live" is worthless at minute 5 |
+| send due WhatsApp | 1 min | same |
+| dial the call queue | 2 min | the 30 minute window has to clear |
+| pull call outcomes | 15 min | reporting only, no rush |
+
+The confirmation message does not wait for a tick. Registration triggers it directly,
+after a short delay set by `confirm_delay_minutes`, because the upsell and downsell
+happen *after* the form and the message content depends on what they bought.
+
+## Stage 9 — Back office hooks
+
+The user's own dashboard, wherever their leads ultimately live. **Do not build an
+integration.** Build the seam, leave it disconnected, and say so.
+
+Every lead event already writes to `funnel_events`. Add one outbound webhook:
+
+- `site_settings.backoffice_webhook_url` — empty by default, and empty means off
+- Fires `lead.registered`, `lead.purchased`, `event.attended` as JSON
+- Signed with a shared secret from `admin_secrets`
+- Retries three times, then gives up quietly. **A dead back office must never break
+  a registration.**
+
+That is the whole stage. When the user is ready to connect something, the events are
+already flowing and it is a URL in a settings field. Tell them this exists and that
+it is deliberately switched off.
+
+## Stage 10 — Hand off
 
 1. `bun run build` must pass. Do not hand over a broken build.
 2. Push everything. Lovable redeploys on its own.
