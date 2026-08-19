@@ -1,0 +1,693 @@
+<title>Path C Setup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --paper:#F4F6F8; --card:#FFFFFF; --ink:#16202B; --muted:#5C6B7A;
+  --rule:#D3DBE3; --rule-soft:#E4EAEF;
+  --act:#C2410C; --act-bg:#FDF0E9; --verify:#0F766E; --verify-bg:#E7F4F2;
+  --warn:#8A5A00; --warn-bg:#FBF3E2;
+  --mono-bg:#16202B; --mono-ink:#DCE6EF;
+  --shadow:0 1px 2px rgba(22,32,43,.05), 0 8px 24px -12px rgba(22,32,43,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+    --rule:#27333F; --rule-soft:#1E2833;
+    --act:#FB8B4C; --act-bg:#2A1810; --verify:#2DD4BF; --verify-bg:#0D2724;
+    --warn:#E0A94A; --warn-bg:#2A2113;
+    --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+  --rule:#27333F; --rule-soft:#1E2833;
+  --act:#FB8B4C; --act-bg:#2A1810; --verify:#2DD4BF; --verify-bg:#0D2724;
+  --warn:#E0A94A; --warn-bg:#2A2113;
+  --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px; margin:0 auto; padding:0 24px 96px}
+
+/* ---------- masthead ---------- */
+.mast{padding:64px 0 40px; border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--act); margin:0 0 20px;
+}
+h1{
+  font-family:Archivo,system-ui,sans-serif; font-weight:700; font-size:clamp(38px,7vw,64px);
+  line-height:1.02; letter-spacing:-.025em; margin:0 0 20px; text-wrap:balance;
+}
+.standfirst{font-size:20px; line-height:1.5; color:var(--muted); margin:0; max-width:56ch}
+
+.facts{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:0; margin-top:40px; border-top:1px solid var(--rule);
+}
+.fact{padding:18px 20px 18px 0; border-right:1px solid var(--rule-soft)}
+.fact:last-child{border-right:0}
+.fact dt{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 6px;
+}
+.fact dd{
+  margin:0; font-family:Archivo,sans-serif; font-weight:600; font-size:22px;
+  letter-spacing:-.01em; font-variant-numeric:tabular-nums;
+}
+
+/* ---------- sections ---------- */
+h2{
+  font-family:Archivo,sans-serif; font-weight:700; font-size:30px; letter-spacing:-.02em;
+  margin:72px 0 8px; text-wrap:balance;
+}
+.sec-note{color:var(--muted); margin:0 0 28px; max-width:62ch}
+p{max-width:64ch}
+
+/* ---------- prep checklist ---------- */
+.prep{
+  background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:8px 24px; box-shadow:var(--shadow);
+}
+.prep ul{list-style:none; margin:0; padding:0}
+.prep li{
+  display:flex; gap:16px; align-items:flex-start;
+  padding:16px 0; border-bottom:1px solid var(--rule-soft);
+}
+.prep li:last-child{border-bottom:0}
+.box{
+  flex:none; width:17px; height:17px; margin-top:5px; border-radius:3px;
+  border:1.5px solid var(--muted);
+}
+.prep b{font-family:Archivo,sans-serif; font-weight:600; display:block; font-size:16px}
+.prep small{color:var(--muted); font-size:14.5px; display:block; margin-top:2px}
+.prep a{color:var(--act); text-decoration-thickness:1px; text-underline-offset:2px}
+
+/* ---------- steps ---------- */
+.step{
+  display:grid; grid-template-columns:64px 1fr; gap:0;
+  margin-top:36px; align-items:start;
+}
+.spine{
+  position:sticky; top:24px; display:flex; flex-direction:column;
+  align-items:center; gap:10px; padding-top:26px;
+}
+.num{
+  font-family:Archivo,sans-serif; font-weight:700; font-size:15px;
+  width:36px; height:36px; border-radius:50%; display:grid; place-items:center;
+  background:var(--ink); color:var(--paper); font-variant-numeric:tabular-nums;
+}
+.thread{width:1.5px; flex:1; min-height:40px; background:var(--rule)}
+
+.card{
+  background:var(--card); border:1px solid var(--rule); border-radius:12px;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.card-head{padding:22px 26px 20px; border-bottom:1px solid var(--rule-soft)}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px}
+.chip{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:4px;
+  border:1px solid var(--rule); color:var(--muted);
+}
+.chip.where{background:var(--act-bg); color:var(--act); border-color:transparent}
+.card-head h3{
+  font-family:Archivo,sans-serif; font-weight:600; font-size:23px;
+  letter-spacing:-.015em; margin:0; text-wrap:balance;
+}
+.card-body{padding:22px 26px 26px}
+.card-body > :first-child{margin-top:0}
+.card-body > :last-child{margin-bottom:0}
+
+ol.do{margin:0; padding-left:20px}
+ol.do li{margin-bottom:11px; padding-left:4px}
+ol.do li::marker{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--muted)}
+kbd{
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:600;
+  background:var(--paper); border:1px solid var(--rule); border-radius:4px; padding:1.5px 6px;
+}
+
+/* ---------- prompt blocks ---------- */
+.prompt{margin:20px 0}
+.prompt-bar{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  background:var(--mono-bg); border-radius:8px 8px 0 0; padding:9px 14px;
+}
+.prompt-bar span{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:#7E93A8;
+}
+.copy{
+  font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  background:transparent; color:var(--mono-ink); border:1px solid #33475C;
+  border-radius:5px; padding:5px 11px; cursor:pointer; transition:all .15s;
+}
+.copy:hover{background:#22303E}
+.copy:focus-visible{outline:2px solid var(--act); outline-offset:2px}
+.copy.done{color:#4ADE80; border-color:#4ADE80}
+pre{
+  margin:0; background:var(--mono-bg); color:var(--mono-ink);
+  border-radius:0 0 8px 8px; padding:18px; overflow-x:auto;
+  font-family:"JetBrains Mono",monospace; font-size:13px; line-height:1.72;
+}
+mark{background:rgba(251,139,76,.22); color:#FFB98A; padding:1px 3px; border-radius:3px}
+
+/* ---------- callouts ---------- */
+.note{
+  display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start;
+  border-radius:8px; padding:14px 16px; margin:20px 0; font-size:15.5px; line-height:1.55;
+}
+.note b{font-family:Archivo,sans-serif; font-weight:600}
+.note p{margin:0; max-width:none}
+.note .ic{font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600; letter-spacing:.08em; padding-top:2px}
+.note.ok{background:var(--verify-bg); color:var(--ink)} .note.ok .ic{color:var(--verify)}
+.note.warn{background:var(--warn-bg); color:var(--ink)} .note.warn .ic{color:var(--warn)}
+
+/* ---------- verify table ---------- */
+.tablewrap{overflow-x:auto; border:1px solid var(--rule); border-radius:10px; background:var(--card)}
+table{border-collapse:collapse; width:100%; font-size:15.5px; min-width:520px}
+th,td{text-align:left; padding:14px 18px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  border-bottom:1px solid var(--rule);
+}
+tr:last-child td{border-bottom:0}
+td:first-child{font-family:Archivo,sans-serif; font-weight:600; white-space:nowrap}
+
+/* ---------- trouble ---------- */
+details{
+  background:var(--card); border:1px solid var(--rule); border-radius:9px;
+  padding:0 20px; margin-bottom:10px;
+}
+summary{
+  font-family:Archivo,sans-serif; font-weight:600; font-size:16.5px;
+  padding:16px 0; cursor:pointer; list-style:none; display:flex;
+  justify-content:space-between; align-items:center; gap:12px;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; font-family:"JetBrains Mono",monospace; color:var(--act); font-size:19px}
+details[open] summary::after{content:"&ndash;"}
+summary:focus-visible{outline:2px solid var(--act); outline-offset:3px; border-radius:4px}
+details > p{margin:0 0 18px; font-size:15.5px; color:var(--muted); max-width:64ch}
+details > p strong{color:var(--ink)}
+
+footer{
+  margin-top:80px; padding-top:26px; border-top:2px solid var(--ink);
+  font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .step{grid-template-columns:38px 1fr}
+  .spine{padding-top:22px}
+  .num{width:30px; height:30px; font-size:13px}
+  .card-head,.card-body{padding-left:18px; padding-right:18px}
+  .fact{border-right:0; border-bottom:1px solid var(--rule-soft)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+@media print{
+  .spine{position:static} .copy{display:none}
+  .card,details,.prep{box-shadow:none; break-inside:avoid}
+  .step{break-inside:avoid}
+}
+</style>
+<style>
+/* Path C additions: a numbered field list for the fill-in block, and a link grid. */
+.linkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:20px 0}
+.linkcard{display:block;padding:16px 18px;border:1px solid var(--rule);border-radius:10px;
+  background:var(--card);text-decoration:none;color:inherit;transition:border-color .15s}
+.linkcard:hover{border-color:var(--act)}
+.linkcard b{font-family:Archivo,sans-serif;display:block;font-size:15px;margin-bottom:3px}
+.linkcard span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);word-break:break-all}
+.fill{background:var(--warn-bg);border-radius:8px;padding:12px 16px;margin:16px 0;font-size:15px}
+.fill b{font-family:Archivo,sans-serif}
+.big{font-family:Archivo,sans-serif;font-weight:700;font-size:19px;margin:26px 0 10px}
+ul.plain{margin:0;padding-left:20px}
+ul.plain li{margin-bottom:8px}
+.cost{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;padding:4px 9px;border-radius:4px;background:var(--verify-bg);color:var(--verify)}
+</style>
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Path C &middot; Lovable only</p>
+  <h1>Build your funnel without touching code</h1>
+  <p class="standfirst">Every page, every email and the whole database already exist.
+  Nothing gets built here &mdash; it only gets filled in. That is why it is cheap.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Time</dt><dd>~20 min</dd></div>
+    <div class="fact"><dt>Lovable credits</dt><dd>5&ndash;10</dd></div>
+    <div class="fact"><dt>Claude Code</dt><dd>Not needed</dd></div>
+    <div class="fact"><dt>Accounts</dt><dd>3 free</dd></div>
+  </dl>
+</header>
+
+<h2>Open these first</h2>
+<p class="sec-note">Three accounts, all free, no card. Make them now so nothing stops you halfway.</p>
+
+<div class="linkgrid">
+  <a class="linkcard" href="https://github.com/signup" target="_blank" rel="noopener">
+    <b>1. GitHub</b><span>github.com/signup</span></a>
+  <a class="linkcard" href="https://lovable.dev" target="_blank" rel="noopener">
+    <b>2. Lovable</b><span>lovable.dev</span></a>
+  <a class="linkcard" href="https://resend.com/signup" target="_blank" rel="noopener">
+    <b>3. Resend</b><span>resend.com/signup &mdash; sends your email</span></a>
+</div>
+
+<div class="note warn">
+  <span class="ic">HAVE</span>
+  <p><b>Also have these ready.</b> A domain you own, your webinar joining link
+  (Zoom, Meet, whatever you use), and your payment links if you are selling an
+  upgrade. You can start without them and add them later, but every one you are
+  missing becomes a placeholder you have to come back to.</p>
+</div>
+
+<h2>The steps</h2>
+<p class="sec-note">Each card says which window you should be looking at.</p>
+
+<!-- 1 -->
+<section class="step">
+  <div class="spine"><div class="num">1</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">On GitHub</span><span class="chip">1 min</span><span class="cost">Free</span></div>
+      <h3>Take your own copy of the funnel</h3>
+    </div>
+    <div class="card-body">
+      <p>This one link creates a private copy in your account. It is not a fork &mdash;
+      there is no path back to the original, and nothing you do can affect it.</p>
+
+      <div class="linkgrid" style="grid-template-columns:1fr">
+        <a class="linkcard" href="https://github.com/roarlikerathore/the-funnel-protocol/generate" target="_blank" rel="noopener">
+          <b>Create my copy &rarr;</b>
+          <span>github.com/roarlikerathore/the-funnel-protocol/generate</span></a>
+      </div>
+
+      <ol class="do">
+        <li>Give it a name, e.g. <code>my-funnel</code></li>
+        <li>Choose <b>Private</b></li>
+        <li><b>Create repository</b></li>
+      </ol>
+      <div class="note ok"><span class="ic">DONE</span>
+        <p>You now own a complete funnel. It has no content in it yet, which is the next 15 minutes.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- 2 -->
+<section class="step">
+  <div class="spine"><div class="num">2</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">3 min</span><span class="cost">0 credits</span></div>
+      <h3>Open your copy in Lovable</h3>
+    </div>
+    <div class="card-body">
+      <ol class="do">
+        <li>Go to <a href="https://lovable.dev" target="_blank" rel="noopener">lovable.dev</a></li>
+        <li><b>New Project</b> &rarr; <b>Import from GitHub</b></li>
+        <li>Authorise Lovable, then pick the repository you just made</li>
+        <li>When it offers <b>Lovable Cloud</b>, say yes. That is your database.</li>
+      </ol>
+      <div class="note ok"><span class="ic">EXPECT</span>
+        <p><b>A page that says PLACEHOLDER everywhere.</b> That is correct. You have the
+        machine; the content goes in next.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- 3 -->
+<section class="step">
+  <div class="spine"><div class="num">3</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">10 min</span><span class="cost">~2 credits</span></div>
+      <h3>Fill in your funnel</h3>
+    </div>
+    <div class="card-body">
+      <p>This is the only step where you write anything. Fill in every bracket below,
+      then paste the whole thing into Lovable's chat.</p>
+
+      <div class="fill">
+        <b>Write plainly.</b> The way you would explain it to a friend beats the way you
+        think a marketer would say it. And if you do not have something, write
+        <code>SKIP</code> &mdash; never invent a testimonial or a number to fill a gap.
+      </div>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+        <pre>Open src/funnel.config.ts and replace the values in the `funnel` object with
+mine, below. Change nothing else in the file, keep the types exactly as they
+are, and do not touch any other file in the project.
+
+BRAND
+  name:             [your brand]
+  host:             [how you sign an email, e.g. Priya]
+  tagline:          [one line on what you teach]
+  domain:           [yourdomain.com]
+  supportEmail:     [your email]
+  sendingSubdomain: mail.[yourdomain.com]
+
+EVENT
+  name:            [event name]
+  days:            [3]
+  startDate:       [2026-09-15]
+  startTime:       [20:00]
+  timezone:        [Asia/Kolkata]
+  durationMinutes: [120]
+  platform:        [Zoom]
+  joinUrl:         [your joining link]
+  isFree:          [true]
+
+PROMISE
+  headline:    [the big claim, not a topic]
+  subheadline: [one sentence under it]
+  bigIdea:     [the one belief that has to change]
+
+AUDIENCE
+  forWhom:    [3 to 5 lines, one per type of person]
+  notForWhom: [3 lines. Be specific, be willing to lose people]
+  profiles:   [6 lines. Who they are in life]
+  challenges: [5 lines. Their struggle, in their words, not yours]
+
+SESSIONS
+  1. [title] | [what they walk away with]
+  2. [title] | [what they walk away with]
+  3. [title] | [what they walk away with]
+
+PROOF
+  credibility:  [2 to 3 sentences on why you are worth their evening]
+  stats:        [label | value, one per line, or NONE]
+  testimonials: [name | quote | result, one per line, or NONE]
+
+OFFER  (write SKIP for either if you are not selling one)
+  upsell:   [name] | [price] | [currency] | [checkout link]
+    items:  [item | worth, one per line]
+  downsell: [name] | [price] | [currency] | [checkout link]
+    items:  [item | worth, one per line]
+
+THEME
+  primary: [#hex]
+  accent:  [#hex]
+  mode:    [dark or light]
+
+LINKS
+  whatsappGroup: [link or SKIP]
+  calendar:      [link or SKIP]
+
+TRACKING
+  metaPixelId: [your pixel id or SKIP]
+
+LEGAL
+  entity:       [registered company name]
+  address:      [registered address]
+  jurisdiction: [city, country]
+  refundPolicy: [one line]
+  disclaimer:   [any disclaimer you must legally show]
+
+Rules:
+- Anything I marked SKIP or left blank stays as PLACEHOLDER. Do not invent it.
+- When you are done, list every field still saying PLACEHOLDER so I can see
+  exactly what is missing.
+- Do not add features, do not redesign anything, do not touch other files.</pre>
+      </div>
+
+      <div class="note warn">
+        <span class="ic">CAREFUL</span>
+        <p><b>Do not let a session title give away its own answer.</b> "How Funded Accounts
+        Work" answers the question and removes the reason to show up. "Where The Capital
+        Actually Comes From" makes them need to be in the room. This one line moves
+        attendance more than anything else on the page.</p>
+      </div>
+
+      <p>When it finishes, look at the page. Your headline, your colours, your sessions.</p>
+    </div>
+  </article>
+</section>
+
+<!-- 4 -->
+<section class="step">
+  <div class="spine"><div class="num">4</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">5 min</span><span class="cost">~2 credits</span></div>
+      <h3>Make the emails speak to each person</h3>
+    </div>
+    <div class="card-body">
+      <p>Everyone picked a situation and a struggle when they registered. This is what
+      lets each email answer the one <em>they</em> chose. Six situations by five
+      struggles means <b>30 versions of every email</b>, from one piece of writing.</p>
+
+      <p>Skip this and the emails still send &mdash; everyone just gets the same generic one.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+        <pre>Open supabase/seed-blocks.sql and fill in the block bodies. Write them in my
+voice, using the exact profile and challenge wording already in
+src/funnel.config.ts. Do not change any other file.
+
+For EACH of my 6 profiles, write PROFILE_MIRROR: two or three short lines that
+describe that person's actual day back to them. No advice, no pitch. It should
+read like I have watched them live.
+
+For EACH of my 6 profiles, write CTA_LINE: one line telling that specific person
+why turning up matters for them.
+
+For EACH of my 5 challenges, write PAIN_TWIST: two or three lines naming the
+struggle, then reframing it as a structural problem rather than a personal
+failing.
+
+For EACH of my 5 challenges, write PROOF: two or three lines of reasoning for
+why that struggle happens. No statistics, no invented case studies, no client
+results. Explanation only.
+
+Rules:
+- Plain sentences. Short lines. No exclamation marks, no hype words.
+- Never invent a number, a client, or a result.
+- Do not give away any session's reveal. If a session title is a question, the
+  emails must not answer it.
+- Replace every NEEDS-COPY. Tell me if any are left.</pre>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- 5 -->
+<section class="step">
+  <div class="spine"><div class="num">5</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">3 min</span><span class="cost">~3 credits</span></div>
+      <h3>Build your database</h3>
+    </div>
+    <div class="card-body">
+      <p>Twenty tables, your settings, your nine emails, and the scheduled jobs that
+      send them. One prompt.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+        <pre>Read src/funnel.config.ts, then:
+
+1. Run scripts/build-emails.mjs to generate the email SQL.
+2. Combine, in this order, into one file called SETUP.sql at the project root:
+   sql/01-schema.sql, then sql/02-seeds.sql.tpl with every {{TOKEN}} replaced
+   from funnel.config.ts, then the generated email SQL, then supabase/
+   seed-blocks.sql, then sql/03-cron.sql.tpl with my project URL and anon key
+   filled in.
+3. Confirm no {{TOKEN}} remains anywhere in SETUP.sql. Tell me if any does.
+4. Then run SETUP.sql against my database.
+5. Confirm the scheduled jobs exist by running:
+   SELECT jobname, schedule, active FROM cron.job;
+
+Do not change any other file.</pre>
+      </div>
+
+      <div class="note ok"><span class="ic">EXPECT</span>
+        <p>Four jobs listed: <code>send-emails</code>, <code>send-whatsapp</code>,
+        <code>run-calls</code>, <code>sync-calls</code>. Those are what actually post
+        your emails. Without them everything queues up and nothing ever leaves.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- 6 -->
+<section class="step">
+  <div class="spine"><div class="num">6</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">Resend, then your domain</span><span class="chip">10 min, then wait</span></div>
+      <h3>Turn on email</h3>
+    </div>
+    <div class="card-body">
+      <p><b>Start this early.</b> It is the single most common reason a funnel goes live
+      and no email ever arrives, and part of it is out of your hands.</p>
+
+      <p class="big">a. Verify your sending domain</p>
+      <ol class="do">
+        <li>Open <a href="https://resend.com/domains" target="_blank" rel="noopener">resend.com/domains</a> &rarr; <b>Add Domain</b></li>
+        <li>Enter <b>mail.yourdomain.com</b> &mdash; the subdomain, not the bare domain</li>
+        <li>Resend shows three records. Add them where you bought your domain</li>
+        <li>Click <b>Verify</b>. Usually minutes, sometimes an hour</li>
+      </ol>
+
+      <div class="note warn">
+        <span class="ic">WHY</span>
+        <p><b>Send from a subdomain, never your main domain.</b> If a batch ever gets
+        marked as spam, the damage stays on <code>mail.yourdomain.com</code> and your
+        normal business email keeps its clean reputation.</p>
+      </div>
+
+      <div class="note warn">
+        <span class="ic">TRAP</span>
+        <p>Most domain hosts add your domain to whatever you type. If Resend shows
+        <code>send.mail.yourdomain.com</code>, type only <b>send.mail</b> in the Name
+        field. Typing the whole thing creates a record ending in your domain twice, and
+        it silently never verifies.</p>
+      </div>
+
+      <p class="big">b. Get your key</p>
+      <ol class="do">
+        <li><a href="https://resend.com/api-keys" target="_blank" rel="noopener">resend.com/api-keys</a> &rarr; <b>Create API Key</b></li>
+        <li>Copy it now. It is shown once.</li>
+      </ol>
+
+      <p class="big">c. Put it in Lovable</p>
+      <ol class="do">
+        <li>Lovable &rarr; backend &rarr; <b>Secrets</b></li>
+        <li><code>RESEND_API_KEY</code> = the key you just copied</li>
+        <li><code>SENDER_EMAIL</code> = <code>hello@mail.yourdomain.com</code></li>
+      </ol>
+
+      <div class="note ok"><span class="ic">SAFE</span>
+        <p>Secrets live in that panel and nowhere else. They never go in a file, and
+        nothing there is readable from a visitor's browser.</p></div>
+    </div>
+  </article>
+</section>
+
+<!-- 7 -->
+<section class="step">
+  <div class="spine"><div class="num">7</div><div class="thread" style="min-height:0"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">Meta &middot; optional</span><span class="chip">5 min</span></div>
+      <h3>Connect your pixel</h3>
+    </div>
+    <div class="card-body">
+      <p>Only needed if you are going to run ads. Skip it and everything else still works.</p>
+      <ol class="do">
+        <li><a href="https://business.facebook.com/events_manager" target="_blank" rel="noopener">Events Manager</a> &rarr; <b>Connect data source</b> &rarr; <b>Web</b></li>
+        <li>Copy the pixel ID, the long number</li>
+        <li>In Lovable: <em>&ldquo;Set tracking.metaPixelId in src/funnel.config.ts to [your ID]. Change nothing else.&rdquo;</em></li>
+      </ol>
+      <div class="note ok"><span class="ic">BUILT IN</span>
+        <p>Advanced matching is already wired up, so registrations are matched to real
+        people rather than guessed at. That is the difference between ads that find your
+        buyers and ads that do not.</p></div>
+    </div>
+  </article>
+</section>
+
+<h2>Check it yourself</h2>
+<p class="sec-note">In this order. Each proves a different link in the chain, and the
+first failure tells you the most.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>#</th><th>Do this</th><th>Correct result</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Open your site</td><td>Your headline, your colours &mdash; no PLACEHOLDER anywhere</td></tr>
+    <tr><td>2</td><td>Register with your own email</td><td>Three steps, then the upsell or thank-you page</td></tr>
+    <tr><td>3</td><td>Open <code>/control-room</code></td><td>A code arrives, and your test registration is listed</td></tr>
+    <tr><td>4</td><td>Wait five minutes</td><td>Your confirmation email arrives</td></tr>
+    <tr><td>5</td><td>Events Manager</td><td>A <code>Lead</code> event from your test</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note warn" style="margin-top:22px">
+  <span class="ic">BEFORE ADS</span>
+  <p><b>Search your site for the word PLACEHOLDER before you spend anything.</b> Any that
+  are left are things you told Lovable to skip. Real traffic hitting an invented
+  testimonial is a problem you cannot see and everyone else can.</p>
+</div>
+
+<h2>When something goes wrong</h2>
+<p class="sec-note">In rough order of how often each actually happens.</p>
+
+<details>
+  <summary>No emails arrive</summary>
+  <p>Three causes, in this order. <strong>One:</strong> your sending domain is not verified
+  at <a href="https://resend.com/domains" target="_blank" rel="noopener">resend.com/domains</a> &mdash;
+  it must say Verified, not Pending. <strong>Two:</strong> the scheduled jobs were never
+  created; run <code>SELECT jobname FROM cron.job;</code> and you should see four.
+  <strong>Three:</strong> it sent and went to spam. Check there before assuming failure.</p>
+</details>
+
+<details>
+  <summary>Lovable used far more credits than expected</summary>
+  <p>Something asked it to build rather than fill in. Every prompt here ends with
+  <em>"do not add features, do not redesign, do not touch other files"</em> &mdash; that
+  sentence is what keeps the cost down. If you dropped it, or asked for a design change
+  in your own words, Lovable will happily rebuild things that already worked.</p>
+</details>
+
+<details>
+  <summary>The page still says PLACEHOLDER</summary>
+  <p>Those are fields you left blank or marked SKIP. Paste the step 3 prompt again with
+  only the missing lines filled in, and add: <em>"Update only these fields, leave
+  everything else exactly as it is."</em></p>
+</details>
+
+<details>
+  <summary>My domain will not verify</summary>
+  <p>Almost always the doubled-name trap. Look at the record you created &mdash; if it
+  ends in your domain twice, delete it and re-add with just the prefix. DNS can also
+  take up to an hour, so if the record looks right, wait before changing anything.</p>
+</details>
+
+<details>
+  <summary>Registration does not save</summary>
+  <p><code>SETUP.sql</code> did not finish. Re-run step 5 and read the output for an
+  error rather than assuming it worked. It is safe to run more than once.</p>
+</details>
+
+<details>
+  <summary>I want to change something later</summary>
+  <p>Almost everything lives in one file. Tell Lovable: <em>"In src/funnel.config.ts,
+  change [field] to [value]. Change nothing else."</em> Dates, prices, colours, copy
+  &mdash; all one line, and every page and email updates with it.</p>
+</details>
+
+<footer>
+  <span>The Funnel Protocol &middot; Path C</span>
+  <span>GitHub &rarr; Lovable &rarr; live</span>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var pre = btn.closest(".prompt").querySelector("pre");
+    navigator.clipboard.writeText(pre.innerText).then(function(){
+      btn.textContent = "Copied"; btn.classList.add("done");
+      setTimeout(function(){ btn.textContent = "Copy"; btn.classList.remove("done"); }, 1800);
+    });
+  });
+});
+</script>
