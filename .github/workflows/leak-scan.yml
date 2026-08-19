@@ -1,0 +1,12 @@
+# The kit is derived from a live private funnel, so "we stripped it" is not
+# something to take on trust. This fails the build if anything private returns.
+name: Leak scan
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./scripts/scan-for-leaks.sh
