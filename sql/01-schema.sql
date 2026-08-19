@@ -29,19 +29,23 @@ CREATE POLICY "write toggles" ON public.page_toggles FOR ALL USING (true) WITH C
 -- RLS ON, NO POLICIES AT ALL. That combination means only the service role can
 -- read it, so edge functions can and the browser cannot. Do not add a policy.
 CREATE TABLE IF NOT EXISTS public.admin_secrets (
-  secret_key   TEXT PRIMARY KEY,
-  secret_value TEXT NOT NULL,
-  updated_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 ALTER TABLE public.admin_secrets ENABLE ROW LEVEL SECURITY;
 
 CREATE TABLE IF NOT EXISTS public.admin_otp (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email      TEXT NOT NULL,
   code_hash  TEXT NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,
-  used       BOOLEAN NOT NULL DEFAULT false,
+  used_at    TIMESTAMPTZ,
+  -- Six digits is 1,000,000 guesses. Without a counter that is a weekend's work.
+  attempts   INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+CREATE INDEX IF NOT EXISTS idx_otp_email ON public.admin_otp (email, created_at DESC);
 ALTER TABLE public.admin_otp ENABLE ROW LEVEL SECURITY;
 
 -- --- Leads and analytics ---------------------------------------------------

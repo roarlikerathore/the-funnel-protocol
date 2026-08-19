@@ -5,12 +5,16 @@
 
 INSERT INTO public.site_settings (setting_key, setting_value) VALUES
   ('brand_name',              '{{BRAND_NAME}}'),
+  -- Short lowercase id used to tag campaigns in reporting, e.g. 'reset'.
+  ('brand_slug',              '{{BRAND_SLUG}}'),
   ('host_name',               '{{HOST_NAME}}'),
   ('support_email',           '{{SUPPORT_EMAIL}}'),
   ('event_name',              '{{EVENT_NAME}}'),
   ('event_date',              '{{EVENT_DATE}}'),
   ('event_time',              '{{EVENT_TIME}}'),
   ('event_timezone',          '{{EVENT_TIMEZONE}}'),
+  -- Offset for the call scheduler, e.g. +05:30. Must match event_timezone.
+  ('event_utc_offset',        '{{EVENT_UTC_OFFSET}}'),
   ('event_days',              '{{EVENT_DAYS}}'),
   ('join_url',                '{{JOIN_URL}}'),
   -- Auto-registering people on the webinar platform is optional. Leave webinar_id

@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
     // A multi night event ends when the last night finishes.
     const eventEnd = new Date(eventStart.getTime() + 2 * 24 * 3600_000 + 2 * 3600_000)
     const deadline = istDate(s.replay3_deadline_date || eventDate, s.replay3_deadline_time || '23:59')
-    const campaign = `mhp_${eventDate}`
+    const campaign = `${s.brand_slug || 'funnel'}_${eventDate}`
 
     // First timer or returning?
     let seqKey = String(body.sequence_key || '')

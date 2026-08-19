@@ -6,7 +6,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { getDeviceId, getStoredLead } from "@/lib/lead";
 
-const SESSION_KEY = "mhp_session";
+const SESSION_KEY = "funnel_session";
 const SESSION_IDLE_MS = 30 * 60 * 1000;
 
 /** A session ends after 30 minutes of inactivity, the usual analytics convention. */
@@ -45,10 +45,10 @@ const utms = () => {
   });
   try {
     if (Object.keys(found).length) {
-      sessionStorage.setItem("mhp_utms", JSON.stringify(found));
+      sessionStorage.setItem("funnel_utms", JSON.stringify(found));
       return found;
     }
-    return JSON.parse(sessionStorage.getItem("mhp_utms") || "{}");
+    return JSON.parse(sessionStorage.getItem("funnel_utms") || "{}");
   } catch {
     return found;
   }

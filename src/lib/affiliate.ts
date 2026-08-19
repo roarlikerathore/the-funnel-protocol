@@ -1,8 +1,8 @@
 import { funnel } from "@/funnel.config";
 import { supabase } from "@/integrations/supabase/client";
 
-const REF_STORAGE_KEY = "mhp_ref_code";
-const SELF_AFFILIATE_KEY = "mhp_my_affiliate";
+const REF_STORAGE_KEY = "funnel_ref_code";
+const SELF_AFFILIATE_KEY = "funnel_my_affiliate";
 
 /** Generate a short 6-char code (uppercase alphanumeric, ambiguity-free) */
 export const generateAffiliateCode = (): string => {

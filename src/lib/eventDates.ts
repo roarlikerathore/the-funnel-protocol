@@ -18,13 +18,13 @@ const formatDay = (y: number, m: number, d: number, offset: number) => {
 
 /**
  * Returns a human-friendly range like "May 1st to May 3rd"
- * based on the latest event date saved in site_settings (mhp_event_date).
+ * based on the latest event date saved in site_settings (event_date).
  * Always a 3-day window.
  */
 export const fetchEventDatesLabel = async (): Promise<string> => {
   try {
     const { settings } = await getSiteConfig();
-    const dateStr: string = settings.mhp_event_date || "2026-05-01";
+    const dateStr: string = settings.event_date || "2026-05-01";
     const [y, m, d] = dateStr.split("-").map(Number);
     return `${formatDay(y, m, d, 0)} to ${formatDay(y, m, d, 2)}`;
   } catch {

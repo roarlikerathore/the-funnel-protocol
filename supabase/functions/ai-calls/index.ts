@@ -41,7 +41,7 @@ const getSecret = async (client: any, key: string): Promise<string> => {
 }
 
 const eventStartIST = (s: Record<string, string>) =>
-  new Date(`${s.mhp_event_date || '2026-05-01'}T${s.mhp_event_time || '20:00'}:00+05:30`)
+  new Date(`${s.event_date}T${s.event_time || '20:00'}:00${s.event_utc_offset || '+05:30'}`)
 
 /** Normalise to E.164 using the configured default country code. */
 const toE164 = (phone: string, cc: string) => {
@@ -110,7 +110,7 @@ Deno.serve(async (req) => {
       const phone = toE164(String(body.phone || ''), s.bolna_default_country_code || '+91')
       if (!phone) return json({ ok: false, reason: 'no phone' })
 
-      const campaign = `mhp_${s.mhp_event_date}`
+      const campaign = `${s.brand_slug || 'funnel'}_${s.event_date}`
       const { error } = await client.from('call_logs').insert({
         email: String(body.email || '').toLowerCase() || null,
         phone,

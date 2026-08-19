@@ -13,8 +13,8 @@ export interface StoredLead {
   registeredAt?: string;
 }
 
-const LEAD_KEY = "mhp_lead";
-const DEVICE_KEY = "mhp_device_id";
+const LEAD_KEY = "funnel_lead";
+const DEVICE_KEY = "funnel_device_id";
 
 /** Device token: random, first-party, no IP and no fingerprinting. */
 export const getDeviceId = (): string => {

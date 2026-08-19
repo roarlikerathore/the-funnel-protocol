@@ -16,7 +16,7 @@ export interface SiteConfig {
   toggles: Record<string, boolean>;
 }
 
-const CACHE_KEY = "mhp_config";
+const CACHE_KEY = "funnel_config";
 const TTL_MS = 5 * 60 * 1000;
 
 let inflight: Promise<SiteConfig> | null = null;

@@ -16,7 +16,7 @@ import { funnel } from "@/funnel.config";
 /** From funnel.config.ts. Empty disables tracking rather than firing to nowhere. */
 export const PIXEL_ID = funnel.tracking?.metaPixelId || "";
 
-const MATCH_KEY = "mhp_fb_match";
+const MATCH_KEY = "funnel_fb_match";
 
 export interface LeadIdentity {
   email?: string;
