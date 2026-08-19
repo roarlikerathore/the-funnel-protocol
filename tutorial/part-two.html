@@ -1,0 +1,334 @@
+<title>Funnel Part Two</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --paper:#FBFAF8; --card:#FFFFFF; --ink:#16202B; --muted:#5C6B7A;
+  --rule:#E1E6EB; --act:#C2410C; --act-soft:#FDF0E9;
+  --verify:#0F766E; --verify-soft:#E7F4F2;
+  --mono-bg:#16202B; --mono-ink:#DCE6EF;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+    --rule:#27333F; --act:#FB8B4C; --act-soft:#2A1810;
+    --verify:#2DD4BF; --verify-soft:#0D2724;
+    --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+  --rule:#27333F; --act:#FB8B4C; --act-soft:#2A1810;
+  --verify:#2DD4BF; --verify-soft:#0D2724;
+  --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:0 26px 80px}
+
+header{padding:60px 0 32px}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--act);margin:0 0 16px}
+h1{font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(34px,7vw,52px);
+  line-height:1.03;letter-spacing:-.025em;margin:0 0 16px;text-wrap:balance}
+.lede{font-size:19px;color:var(--muted);margin:0;max-width:52ch}
+
+.need{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;padding-top:26px;
+  border-top:1px solid var(--rule)}
+.need span{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:7px 12px;border-radius:5px;
+  background:var(--card);border:1px solid var(--rule);color:var(--muted)}
+
+/* ---- steps ---- */
+.step{margin-top:52px;break-inside:avoid;page-break-inside:avoid}
+.head{display:flex;align-items:baseline;gap:16px;padding-bottom:14px;
+  border-bottom:2px solid var(--ink);margin-bottom:22px}
+.n{font-family:Archivo,sans-serif;font-weight:800;font-size:44px;line-height:1;
+  letter-spacing:-.04em;color:var(--act);font-variant-numeric:tabular-nums}
+.head h2{font-family:Archivo,sans-serif;font-weight:700;font-size:25px;
+  letter-spacing:-.02em;margin:0;flex:1;text-wrap:balance}
+.mins{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+.where{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--act);
+  background:var(--act-soft);display:inline-block;padding:5px 11px;border-radius:5px;
+  margin-bottom:18px}
+
+ol.clicks{counter-reset:c;list-style:none;margin:0;padding:0}
+ol.clicks li{counter-increment:c;position:relative;padding:0 0 14px 40px;
+  border-left:1px solid var(--rule);margin-left:11px}
+ol.clicks li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.clicks li::before{content:counter(c);position:absolute;left:-11px;top:0;
+  width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  display:grid;place-items:center}
+ol.clicks b{font-family:Archivo,sans-serif;font-weight:600}
+ol.clicks small{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+
+.tip{background:var(--verify-soft);border-radius:8px;padding:13px 16px;margin:20px 0 0;
+  font-size:15.5px;line-height:1.5}
+.tip b{font-family:Archivo,sans-serif;font-weight:600;color:var(--verify)}
+
+/* ---- prompts ---- */
+.p-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:var(--mono-bg);border-radius:8px 8px 0 0;padding:9px 14px;margin-top:20px}
+.p-bar span{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:#7E93A8}
+.copy{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  background:transparent;color:var(--mono-ink);border:1px solid #33475C;border-radius:5px;
+  padding:5px 11px;cursor:pointer}
+.copy:hover{background:#22303E}
+.copy:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+.copy.ok{color:#4ADE80;border-color:#4ADE80}
+pre{margin:0;background:var(--mono-bg);color:var(--mono-ink);border-radius:0 0 8px 8px;
+  padding:17px;overflow-x:auto;font-family:"JetBrains Mono",monospace;
+  font-size:12.5px;line-height:1.7}
+
+/* ---- final check ---- */
+.check{margin-top:56px;padding-top:30px;border-top:2px solid var(--ink)}
+.check h2{font-family:Archivo,sans-serif;font-weight:700;font-size:25px;margin:0 0 20px}
+.check ol{list-style:none;counter-reset:v;margin:0;padding:0}
+.check li{counter-increment:v;display:flex;gap:14px;padding:13px 0;
+  border-bottom:1px solid var(--rule)}
+.check li:last-child{border-bottom:0}
+.check li::before{content:counter(v);flex:none;width:24px;height:24px;border-radius:50%;
+  border:1.5px solid var(--act);color:var(--act);font-family:"JetBrains Mono",monospace;
+  font-size:11px;font-weight:600;display:grid;place-items:center}
+.check b{font-family:Archivo,sans-serif;font-weight:600;display:block}
+.check small{color:var(--muted);font-size:15px}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:8px}
+
+@media (max-width:600px){
+  body{font-size:16px}
+  .n{font-size:34px}
+  .head h2{font-size:21px}
+  .mins{display:none}
+}
+@media print{
+  :root{--paper:#fff;--card:#fff;--ink:#111;--muted:#555;--rule:#ddd;
+         --act:#B3400C;--act-soft:#FBEFE8;--verify:#0B5F59;--verify-soft:#EDF6F5}
+  .copy{display:none}
+  .wrap{max-width:none;padding:0}
+  .step{page-break-inside:avoid}
+  pre{white-space:pre-wrap;word-break:break-word;background:#F4F5F7;color:#111;
+      border:1px solid #ddd}
+  .p-bar{background:#F4F5F7;border:1px solid #ddd;border-bottom:0}
+  .p-bar span{color:#555}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>
+.soon{background:var(--card);border:1px dashed var(--rule);border-radius:10px;padding:20px 22px;margin-top:22px}
+.soon h3{font-family:Archivo,sans-serif;font-weight:700;font-size:18px;margin:0 0 6px}
+.soon p{margin:0;color:var(--muted);font-size:15.5px;max-width:60ch}
+.soon .tag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:4px;
+  padding:3px 8px;display:inline-block;margin-bottom:10px}
+.warn{background:#FBF3E2;color:#16202B;border-radius:8px;padding:13px 16px;margin:20px 0 0;font-size:15.5px;line-height:1.5}
+.warn b{font-family:Archivo,sans-serif;font-weight:600;color:#8A5A00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#2A2113;color:#E6ECF2}
+  :root:not([data-theme="light"]) .warn b{color:#E0A94A}}
+:root[data-theme="dark"] .warn{background:#2A2113;color:#E6ECF2}
+:root[data-theme="dark"] .warn b{color:#E0A94A}
+@media print{.warn{background:#FBF3E2;color:#111}.soon{border-style:solid}}
+</style>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Quickstart &middot; Part Two</p>
+  <h1>AI reminder calls</h1>
+  <p class="lede">Your funnel is live and taking registrations. This is the single
+  biggest thing you can add next: a short automated call before you go live.</p>
+  <div class="need">
+    <span>~15 minutes</span>
+    <span>1 paid account</span>
+    <span>Do it once</span>
+  </div>
+</header>
+
+<section class="step">
+  <div class="head"><span class="n">&mdash;</span><h2>Why calls, before anything else</h2></div>
+  <p>People register for a free event and then their week happens. An email is easy
+  to ignore. A phone call thirty minutes before you go live is not.</p>
+  <p>It is the only remaining thing that changes how many people are actually in the
+  room, rather than how many signed up. Everything else on this page is smaller.</p>
+  <div class="warn"><b>This costs money.</b> Calls are billed per minute by the calling
+  provider. Budget for it before you switch it on, and start with one event rather
+  than a standing setting you forget about.</div>
+</section>
+
+<!-- 1 -->
+<section class="step">
+  <div class="head"><span class="n">1</span><h2>Make a Bolna account</h2><span class="mins">5 min</span></div>
+  <p class="where">On bolna.ai</p>
+  <ol class="clicks">
+    <li><b>Go to bolna.ai and sign up</b></li>
+    <li><b>Add credit</b><small>Start small. You are testing, not launching.</small></li>
+    <li><b>Create an agent</b><small>This is the voice that will call your registrants.</small></li>
+    <li><b>Copy the Agent ID</b><small>A long code. You need it in step 3.</small></li>
+    <li><b>Go to Settings &rarr; API Keys and create a key</b><small>Copy it now. It is shown once.</small></li>
+  </ol>
+</section>
+
+<!-- 2 -->
+<section class="step">
+  <div class="head"><span class="n">2</span><h2>Write the call script</h2><span class="mins">5 min</span></div>
+  <p class="where">On bolna.ai</p>
+  <p>Paste this into your agent, replacing the brackets. Keep it plain.</p>
+
+  <div class="p-bar"><span>Your agent script</span><button class="copy" type="button">Copy</button></div>
+  <pre>You are calling someone who signed up for a free online session.
+
+Say this, naturally, and keep it under twenty seconds:
+
+"Hi, is that [first name]? This is a quick reminder from [YOUR NAME]'s team.
+Your free online session starts in about thirty minutes. You'll find the
+joining link in your email. Will you be able to join us?"
+
+If they say yes: "Great, see you there." End the call.
+If they say no: "No problem, thanks for letting me know." End the call.
+If they ask a question you cannot answer: "I'll have someone email you
+about that." End the call.
+
+Never make promises about results, money, or outcomes.
+Never pressure anyone. If they want to go, let them go.</pre>
+
+  <div class="warn"><b>Voice providers check your script, and they are strict.</b>
+  Scripts get rejected for words that are harmless in context. Avoid anything that
+  sounds like a money guarantee, anything about earnings, and unverifiable claims
+  like &ldquo;the top 3%&rdquo;. If your brand name itself sounds dramatic, use your
+  event name instead. Plain and boring gets approved. Clever does not.</div>
+</section>
+
+<!-- 3 -->
+<section class="step">
+  <div class="head"><span class="n">3</span><h2>Connect it to your funnel</h2><span class="mins">3 min</span></div>
+  <p class="where">In your Control Room</p>
+  <ol class="clicks">
+    <li><b>Open your site and add /control-room to the address</b>
+      <small>For example <code>yourdomain.com/control-room</code></small></li>
+    <li><b>Click &ldquo;Email me a code&rdquo;, then enter the code</b></li>
+    <li><b>Go to the Settings tab</b></li>
+    <li><b>Fill in these five values</b>
+      <small>
+        <code>bolna_enabled</code> &rarr; true<br>
+        <code>bolna_agent_id</code> &rarr; your Agent ID from step 1<br>
+        <code>bolna_api_key</code> &rarr; your API key from step 1<br>
+        <code>bolna_lead_time_minutes</code> &rarr; 30<br>
+        <code>bolna_default_country_code</code> &rarr; your country code, e.g. +91
+      </small></li>
+    <li><b>Click away from each field to save it</b></li>
+  </ol>
+  <div class="tip"><b>Your key is safe.</b> It is stored where only the backend can read
+  it, never in a file and never anywhere a visitor's browser can reach.</div>
+</section>
+
+<!-- 4 -->
+<section class="step">
+  <div class="head"><span class="n">4</span><h2>Test it on yourself</h2><span class="mins">2 min</span></div>
+  <p class="where">On your own site</p>
+  <ol class="clicks">
+    <li><b>Register on your own funnel, with your real phone number</b></li>
+    <li><b>Wait for the call</b>
+      <small>It comes thirty minutes before your event starts. If your event is
+      further away than that, temporarily set the event date to today to test.</small></li>
+    <li><b>Answer it and listen to the whole thing</b>
+      <small>You are checking it sounds like a person, not a robot reading a form.</small></li>
+    <li><b>Check the Control Room shows the call</b></li>
+  </ol>
+  <div class="warn"><b>Do not skip this.</b> The first time you hear your own script out
+  loud is when you notice what is wrong with it. Never let a registrant be the first
+  person to hear it.</div>
+</section>
+
+<!-- 5 -->
+<section class="step">
+  <div class="head"><span class="n">5</span><h2>Two smaller things worth doing</h2><span class="mins">10 min</span></div>
+  <p class="where">In your Control Room</p>
+
+  <p style="margin-bottom:6px"><b>Auto-register people on Zoom.</b> Each person gets their
+  own joining link, which means Zoom can tell you who actually turned up.</p>
+  <ol class="clicks" style="margin-bottom:26px">
+    <li><b>In Zoom, create a Server-to-Server OAuth app</b>
+      <small>marketplace.zoom.us &rarr; Develop &rarr; Build App</small></li>
+    <li><b>Give it these three permissions</b>
+      <small>webinar:read, webinar:write, report:read</small></li>
+    <li><b>Click Activate</b>
+      <small>Ticking permissions is not enough. If you skip Activate, nothing works,
+      and the error will not tell you that.</small></li>
+    <li><b>Put the Account ID, Client ID and Client Secret into your secrets</b></li>
+    <li><b>Set <code>webinar_id</code> in Settings to your webinar number</b></li>
+  </ol>
+
+  <p style="margin-bottom:6px"><b>Send from your own domain.</b> Mail from your own address
+  lands better and looks like you.</p>
+  <ol class="clicks">
+    <li><b>Add your domain in Lovable&rsquo;s email settings</b></li>
+    <li><b>Add the DNS records it gives you, where you bought your domain</b></li>
+    <li><b>Use a subdomain, not your bare domain</b>
+      <small>For example <code>mail.yourdomain.com</code>. If a batch is ever marked
+      as spam, the damage stays there and your normal email keeps working.</small></li>
+  </ol>
+</section>
+
+<!-- pending -->
+<section class="step">
+  <div class="head"><span class="n">&rarr;</span><h2>What comes after this</h2></div>
+
+  <div class="soon">
+    <span class="tag">Next stage</span>
+    <h3>WhatsApp reminders</h3>
+    <p>For most audiences this outperforms email, and the funnel is already built for
+    it: the database tables, the sending code and the schedule are all in place and
+    switched off. What it needs is a WhatsApp Business provider and message templates
+    approved by Meta in advance, which takes days rather than minutes. That is why it
+    is its own stage rather than a step here. A separate guide will cover it.</p>
+  </div>
+
+  <div class="soon">
+    <span class="tag">Next stage</span>
+    <h3>Your own dashboard</h3>
+    <p>Every registration and sale already fires an event, and the funnel can post
+    those to any address you give it. Nothing is connected yet, deliberately. When you
+    have somewhere for them to go, it is one setting.</p>
+  </div>
+</section>
+
+<div class="check">
+  <h2>Check it worked</h2>
+  <ol>
+    <li><div><b>Register on your own funnel with your real number</b><small>The full flow, as a stranger would.</small></div></li>
+    <li><div><b>The call arrives about thirty minutes before</b><small>Answer it. Listen to all of it.</small></div></li>
+    <li><div><b>It sounds like a person</b><small>If it does not, fix the script and test again.</small></div></li>
+    <li><div><b>The Control Room lists the call</b><small>With a status against it.</small></div></li>
+    <li><div><b>Your Bolna balance went down</b><small>That is how you know it really dialled.</small></div></li>
+  </ol>
+</div>
+
+<footer>
+  <span>The Funnel Protocol &middot; Part Two</span>
+  <span>Calls &rarr; Zoom &rarr; your domain</span>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function(b){
+  b.addEventListener("click",function(){
+    var p=b.parentElement.nextElementSibling;
+    navigator.clipboard.writeText(p.innerText).then(function(){
+      b.textContent="Copied";b.classList.add("ok");
+      setTimeout(function(){b.textContent="Copy";b.classList.remove("ok")},1800);
+    });
+  });
+});
+</script>
