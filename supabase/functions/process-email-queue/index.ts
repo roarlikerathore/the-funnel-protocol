@@ -1,72 +1,69 @@
-// Cron worker: picks pending emails from the custom email_queue table and sends via Resend
+// Cron worker: sends every queued email whose moment has arrived.
+//
+// It does not know or care which provider is in use. That decision lives in
+// _shared/mailer.ts, driven by site_settings.email_provider, so switching from
+// Lovable's transactional email to Resend is a settings change, not a deploy.
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors'
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import { sendMail } from '../_shared/mailer.ts'
 import { render, tagLinks, eventLabels, loadBlocks } from '../_shared/render.ts'
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
-const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY')!
-// SENDER: bulk mail goes from a subdomain, never the root domain. If a batch ever gets
-// marked as spam the damage stays on the sending subdomain and the root domain keeps its
-// clean reputation for the mailbox the user actually reads.
-// Resolution order is secret -> site_settings.sender_email -> this default, so moving the
-// sending domain again is a Control Room edit rather than a redeploy.
-// The sending subdomain has no MX, so replies to it would bounce. Emails invite replies,
-// so reply_to points at the real inbox.
-const SENDER_EMAIL_ENV = Deno.env.get('SENDER_EMAIL') || ''
-const REPLY_TO_ENV = Deno.env.get('REPLY_TO_EMAIL') || ''
+const BATCH = 25
+const MAX_ATTEMPTS = 5
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
+  const sb = createClient(SUPABASE_URL, SERVICE_KEY)
 
-  const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
-
-  const { data: due, error } = await supabase
+  const { data: due, error } = await sb
     .from('email_queue')
     .select('id, template_key, to_email, to_name, subject_snapshot, html_snapshot, attempts, variant_group, sequence_key, profile, challenge, metadata')
     .eq('status', 'pending')
     .lte('scheduled_at', new Date().toISOString())
+    .lt('attempts', MAX_ATTEMPTS)
     .order('scheduled_at', { ascending: true })
-    .limit(25)
+    .limit(BATCH)
 
   if (error) {
-    return new Response(JSON.stringify({ error }), { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+    return new Response(JSON.stringify({ error }), {
+      status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    })
   }
 
-  const { data: settingRows } = await supabase.from('site_settings').select('setting_key, setting_value')
+  const { data: settingRows } = await sb.from('site_settings').select('setting_key, setting_value')
   const settings: Record<string, string> = {}
   ;(settingRows || []).forEach((r: any) => { settings[r.setting_key] = r.setting_value })
-  const footer = settings.email_footer_html || ''
-  const senderEmail = SENDER_EMAIL_ENV || settings.sender_email || ''
-  const replyTo = REPLY_TO_ENV || settings.reply_to_email || ''
 
-  // Loaded lazily: only a variant row needs them, and most batches have none.
+  // Loaded only if a variant row turns up in this batch, which is usually not the case.
   let blocks: Record<string, Record<string, string>> | null = null
   let labels: any = null
 
   /**
-   * A variant row is a placeholder. Which email actually goes out depends on what the lead
-   * bought AFTER registering, so the decision is made here, at the last possible moment,
-   * rather than when the row was queued.
+   * A variant row is a placeholder. WHICH email goes out depends on what the person
+   * bought AFTER registering, so the choice is made here, at the last possible
+   * moment, rather than when the row was queued.
    */
-  const resolveVariant = async (row: any): Promise<{ subject: string; html: string; key: string }> => {
+  const resolveVariant = async (row: any) => {
     const fallback = { subject: row.subject_snapshot, html: row.html_snapshot, key: row.template_key }
 
-    const { data: conv } = await supabase.from('conversions')
+    const { data: conv } = await sb.from('conversions')
       .select('product').ilike('email', row.to_email)
       .order('created_at', { ascending: false }).limit(10)
 
     const bought = new Set((conv || []).map((c: any) => c.product))
-    // VIP outranks Inner Players: someone who took the upsell never sees the downsell email.
-    const match = bought.has('vip_990') ? 'vip_990' : bought.has('ip_299') ? 'ip_299' : 'none'
+    // Upsell outranks downsell: someone who took the bigger offer never gets the smaller email.
+    const match = bought.has('upsell') ? 'upsell' : bought.has('downsell') ? 'downsell' : 'none'
     if (match === 'none') return fallback
 
-    const { data: tpl } = await supabase.from('email_templates')
-      .select('template_key, subject, html, preheader, framework')
-      .eq('variant_group', row.variant_group).eq('variant_match', match).eq('enabled', true).maybeSingle()
+    const { data: tpl } = await sb.from('email_templates')
+      .select('template_key, subject, html, framework')
+      .eq('variant_group', row.variant_group).eq('variant_match', match)
+      .eq('enabled', true).maybeSingle()
     if (!tpl) return fallback
 
-    if (!blocks) { blocks = await loadBlocks(supabase); labels = eventLabels(settings) }
+    if (!blocks) { blocks = await loadBlocks(sb); labels = eventLabels(settings) }
     const lead = { first_name: row.to_name || '', profile: row.profile, challenge: row.challenge, email: row.to_email }
     const campaign = row.metadata?.campaign || ''
     return {
@@ -76,54 +73,50 @@ Deno.serve(async (req) => {
     }
   }
 
-  const results: any[] = []
+  const results: unknown[] = []
   for (const row of due || []) {
+    let subject = row.subject_snapshot
+    let html = row.html_snapshot
+    let key = row.template_key
     try {
-      let sendSubject = row.subject_snapshot
-      let sendHtml = row.html_snapshot
-      let sentKey = row.template_key
       if (row.variant_group) {
         const picked = await resolveVariant(row)
-        sendSubject = picked.subject; sendHtml = picked.html; sentKey = picked.key
+        subject = picked.subject; html = picked.html; key = picked.key
       }
-      const finalHtml = `${sendHtml || ''}\n${footer}`
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          from: `${settings.host_name || settings.brand_name} <${senderEmail}>`,
-          reply_to: replyTo,
-          to: [row.to_email],
-          subject: sendSubject || '(no subject)',
-          html: finalHtml,
-        }),
-      })
-      const data = await res.json()
-      const ok = res.ok && data?.id
 
-      await supabase.from('email_queue').update({
-        status: ok ? 'sent' : 'failed',
-        attempts: (row.attempts || 0) + 1,
-        last_error: ok ? null : JSON.stringify(data),
-        provider_id: data?.id || null,
-        sent_at: ok ? new Date().toISOString() : null,
-        template_key: sentKey,
+      const res = await sendMail({
+        to: row.to_email,
+        subject: subject || '(no subject)',
+        html: html || '',
+        purpose: 'transactional',
+        label: key,
+        // Same queue row must never send twice, however often the cron overlaps.
+        idempotencyKey: row.id,
+      })
+
+      const attempts = (row.attempts || 0) + 1
+      await sb.from('email_queue').update({
+        // Keep it pending for another pass unless the retry budget is spent.
+        status: res.ok ? 'sent' : attempts >= MAX_ATTEMPTS ? 'failed' : 'pending',
+        attempts,
+        template_key: key,
+        provider_id: res.id,
+        last_error: res.ok ? null : JSON.stringify(res.error).slice(0, 800),
+        sent_at: res.ok ? new Date().toISOString() : null,
       }).eq('id', row.id)
 
-      await supabase.from('email_logs').insert({
-        queue_id: row.id,
-        to_email: row.to_email,
-        template_key: sentKey,
-        subject: sendSubject,
-        status: ok ? 'sent' : 'failed',
-        provider_id: data?.id || null,
-        error: ok ? null : JSON.stringify(data),
+      await sb.from('email_logs').insert({
+        queue_id: row.id, to_email: row.to_email, template_key: key, subject,
+        status: res.ok ? 'sent' : 'failed', provider_id: res.id,
+        error: res.ok ? null : JSON.stringify(res.error).slice(0, 800),
       })
 
-      results.push({ id: row.id, ok })
+      results.push({ id: row.id, ok: res.ok, provider: res.provider })
     } catch (e) {
-      await supabase.from('email_queue').update({
-        status: 'failed', last_error: String(e), attempts: (row.attempts || 0) + 1,
+      const attempts = (row.attempts || 0) + 1
+      await sb.from('email_queue').update({
+        status: attempts >= MAX_ATTEMPTS ? 'failed' : 'pending',
+        attempts, last_error: String(e).slice(0, 800),
       }).eq('id', row.id)
       results.push({ id: row.id, ok: false, error: String(e) })
     }

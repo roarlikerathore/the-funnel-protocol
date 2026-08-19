@@ -103,9 +103,14 @@ Two rules that matter more than the copy:
 1. **Stage awareness.** Compute every send time at enqueue. If it has already
    passed, skip it — never back-fire. Someone registering two hours before the
    event must not receive "4 days to go".
-2. **Never send from the root domain.** Bulk mail goes from a subdomain
-   (`mail.theirdomain.com`), reply-to points at their real inbox. Explain why:
-   a spam complaint should not poison the domain their actual mail comes from.
+2. **Provider is a setting, never a hardcoded API.** `site_settings.email_provider`
+   selects between `lovable` (the default: no signup, no DNS, works the moment
+   Cloud is enabled), `resend`, and `builtin`. On Lovable, do NOT send the user
+   off to create a third-party email account before they can test a send.
+3. **Never send from the root domain** once they do move to their own provider.
+   Bulk mail goes from a subdomain (`mail.theirdomain.com`), reply-to points at
+   their real inbox. Explain why: a spam complaint should not poison the domain
+   their actual mail comes from.
 
 ## Stage 5 — WhatsApp
 

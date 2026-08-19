@@ -20,7 +20,10 @@ INSERT INTO public.site_settings (setting_key, setting_value) VALUES
   -- Bulk mail from a subdomain; replies to the real inbox, which has an MX record.
   ('sender_email',            '{{SENDER_EMAIL}}'),
   ('reply_to_email',          '{{SUPPORT_EMAIL}}'),
-  ('email_provider',          'resend'),
+  ('sending_subdomain',       '{{SENDING_SUBDOMAIN}}'),
+  -- lovable | resend | builtin. Lovable needs no signup and no DNS to start.
+  -- Changing this switches provider with no deploy.
+  ('email_provider',          'lovable'),
   ('whatsapp_enabled',        '{{WA_ENABLED}}'),
   ('whatsapp_provider',       '{{WA_PROVIDER}}'),
   ('calls_enabled',           '{{CALLS_ENABLED}}'),

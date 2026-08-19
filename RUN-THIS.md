@@ -6,6 +6,7 @@ Two ways in. Pick one, then never think about the other.
 |---|---|---|---|
 | Best for | Never touched code | Want to own every piece | No Claude Code |
 | Accounts | Lovable, GitHub | GitHub, Supabase, Vercel | Lovable, GitHub |
+| Email | Lovable, built in | Bring your own | Lovable, built in |
 | Claude Code | Required | Required | **Not needed** |
 | Lovable credits | 1&ndash;2 | **zero** | ~5&ndash;10 |
 | Time | ~15 min | ~20 min | ~20 min |
@@ -157,24 +158,26 @@ CONNECT MY OWN BACKEND
    These two are safe in the browser and belong in .env. Nothing else does.
 7. Write .env from what I give you and confirm .env is in .gitignore.
    If it is not, add it before anything is committed.
-8. Anything secret (email keys, calling keys) goes in Supabase's own secret
-   store, never in .env and never in a file. Tell me where that screen is
-   when we reach it.
+8. Anything secret goes in Supabase's own secret store, never in .env and never
+   in a file. Tell me where that screen is when we reach it.
+9. I am not on Lovable, so its built-in email is unavailable to me. Walk me
+   through Resend instead: sign up, verify a sending subdomain, create a key.
+   Then set site_settings.email_provider to 'resend'.
 
 BUILD
-9. Follow the build order stage by stage. Commit in logical chunks and push.
-10. Generate SETUP.sql at my repo root. Confirm no {{TOKEN}} survived into it.
-11. Run the build. If it fails, fix it. Do not hand me a broken build.
+10. Follow the build order stage by stage. Commit in logical chunks and push.
+11. Generate SETUP.sql at my repo root. Confirm no {{TOKEN}} survived into it.
+12. Run the build. If it fails, fix it. Do not hand me a broken build.
 
 DEPLOY
-12. Walk me through Vercel: import my GitHub repo, framework Vite, and the two
+13. Walk me through Vercel: import my GitHub repo, framework Vite, and the two
     environment variables from step 6. Tell me exactly what to click.
-13. After it deploys, give me my live URL and check the site actually loads.
+14. After it deploys, give me my live URL and check the site actually loads.
 
 HAND OVER
-14. Give me SETUP.sql and tell me where to paste it in Supabase.
-15. Give me STILL-NEEDED.md: every placeholder still in the funnel.
-16. Give me a numbered checklist of what to verify myself, in order, with what
+15. Give me SETUP.sql and tell me where to paste it in Supabase.
+16. Give me STILL-NEEDED.md: every placeholder still in the funnel.
+17. Give me a numbered checklist of what to verify myself, in order, with what
     a correct result looks like for each.
 
 RULES, these matter more than speed
@@ -356,17 +359,32 @@ Read src/funnel.config.ts, then:
 Do not change any other file.
 ```
 
-## C6 — your keys
+## C6 — check email is sending
 
-Two, and they never go in a file:
+Nothing to set up. Lovable sends your email itself, with a key it created when
+you enabled Cloud. No third account, no DNS, no waiting.
 
-1. Lovable &rarr; backend &rarr; **Secrets**
-2. Add `RESEND_API_KEY` &mdash; from resend.com, for sending email
-3. Add `SENDER_EMAIL` &mdash; `hello@mail.[yourdomain.com]`
+```text
+Send me one test email so I know the pipeline works.
 
-Resend will not send until you verify that sending subdomain. It gives you three
-DNS records to add wherever you bought your domain. Do it early: it is the single
-most common reason a funnel goes live and no email ever arrives.
+1. Confirm site_settings.email_provider is set to 'lovable'.
+2. Confirm the LOVABLE_API_KEY secret exists in this project.
+3. Send a test email to [YOUR EMAIL] with the subject "Funnel test" using
+   the shared mailer in supabase/functions/_shared/mailer.ts.
+4. Tell me exactly what came back. If it failed, show me the error rather
+   than describing it.
+
+Change nothing else.
+```
+
+**Later, from your own domain.** Not needed to launch. Add your domain in
+Lovable's email settings, or switch provider entirely by setting
+`email_provider` to `resend` in the Control Room and adding a `RESEND_API_KEY`
+secret. Nothing else in the funnel changes.
+
+If you do move to your own domain, send from a **subdomain**
+(`mail.yourdomain.com`), never the bare domain. A spam complaint then damages
+the subdomain's reputation instead of the mailbox you actually read.
 
 ## C7 — check it
 
@@ -385,6 +403,7 @@ The same five checks at the bottom of this page. Run them in order.
 | 4 | Wait five minutes | Confirmation email arrives |
 | 5 | Meta Events Manager | A `Lead` event appears |
 
-Email is the one that usually fails first, and it is almost always the sending
-domain: providers refuse to send from a domain you have not verified. Claude
-tells you which DNS records to add. Five minutes, once.
+If email is the one that fails, check the scheduled jobs first:
+`SELECT jobname FROM cron.job;` should return four. Without them everything
+queues and nothing leaves. On Paths A and C there is no domain to verify, so
+that is rarely the cause. On Path B it usually is.

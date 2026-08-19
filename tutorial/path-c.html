@@ -252,20 +252,18 @@ ul.plain li{margin-bottom:8px}
     <div class="fact"><dt>Time</dt><dd>~20 min</dd></div>
     <div class="fact"><dt>Lovable credits</dt><dd>5&ndash;10</dd></div>
     <div class="fact"><dt>Claude Code</dt><dd>Not needed</dd></div>
-    <div class="fact"><dt>Accounts</dt><dd>3 free</dd></div>
+    <div class="fact"><dt>Accounts</dt><dd>2 free</dd></div>
   </dl>
 </header>
 
 <h2>Open these first</h2>
-<p class="sec-note">Three accounts, all free, no card. Make them now so nothing stops you halfway.</p>
+<p class="sec-note">Two accounts, both free, no card. Email is already included, so there is no third one to make.</p>
 
 <div class="linkgrid">
   <a class="linkcard" href="https://github.com/signup" target="_blank" rel="noopener">
     <b>1. GitHub</b><span>github.com/signup</span></a>
   <a class="linkcard" href="https://lovable.dev" target="_blank" rel="noopener">
     <b>2. Lovable</b><span>lovable.dev</span></a>
-  <a class="linkcard" href="https://resend.com/signup" target="_blank" rel="noopener">
-    <b>3. Resend</b><span>resend.com/signup &mdash; sends your email</span></a>
 </div>
 
 <div class="note warn">
@@ -529,52 +527,48 @@ Do not change any other file.</pre>
   <div class="spine"><div class="num">6</div><div class="thread"></div></div>
   <article class="card">
     <div class="card-head">
-      <div class="chips"><span class="chip where">Resend, then your domain</span><span class="chip">10 min, then wait</span></div>
-      <h3>Turn on email</h3>
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">2 min</span><span class="cost">0 credits</span></div>
+      <h3>Check email is sending</h3>
     </div>
     <div class="card-body">
-      <p><b>Start this early.</b> It is the single most common reason a funnel goes live
-      and no email ever arrives, and part of it is out of your hands.</p>
+      <p>Nothing to set up. Lovable sends your email itself, using a key it created
+      when you enabled Cloud in step 2. No third account, no DNS records, no waiting
+      for a domain to verify.</p>
 
-      <p class="big">a. Verify your sending domain</p>
-      <ol class="do">
-        <li>Open <a href="https://resend.com/domains" target="_blank" rel="noopener">resend.com/domains</a> &rarr; <b>Add Domain</b></li>
-        <li>Enter <b>mail.yourdomain.com</b> &mdash; the subdomain, not the bare domain</li>
-        <li>Resend shows three records. Add them where you bought your domain</li>
-        <li>Click <b>Verify</b>. Usually minutes, sometimes an hour</li>
-      </ol>
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+        <pre>Send me one test email so I know the pipeline works.
 
-      <div class="note warn">
-        <span class="ic">WHY</span>
-        <p><b>Send from a subdomain, never your main domain.</b> If a batch ever gets
-        marked as spam, the damage stays on <code>mail.yourdomain.com</code> and your
-        normal business email keeps its clean reputation.</p>
+1. Confirm site_settings.email_provider is set to 'lovable'.
+2. Confirm the LOVABLE_API_KEY secret exists in this project.
+3. Send a test email to [YOUR EMAIL] with the subject "Funnel test" using
+   the shared mailer in supabase/functions/_shared/mailer.ts.
+4. Tell me exactly what came back. If it failed, show me the error rather
+   than describing it.
+
+Change nothing else.</pre>
       </div>
 
+      <div class="note ok"><span class="ic">EXPECT</span>
+        <p>An email in your inbox within a minute. If it lands in spam, that is still
+        a pass &mdash; it sent.</p></div>
+
+      <p class="big">Later: sending from your own domain</p>
+      <p>Not needed to launch. Worth doing before you scale, because mail from your own
+      domain lands better and looks like you.</p>
+      <ul class="plain">
+        <li>Add your domain in Lovable&rsquo;s email settings and follow the DNS records it gives you</li>
+        <li>Or switch provider entirely: set <code>email_provider</code> to
+          <code>resend</code> in the Control Room and add a <code>RESEND_API_KEY</code>
+          secret. Nothing else changes.</li>
+      </ul>
+
       <div class="note warn">
-        <span class="ic">TRAP</span>
-        <p>Most domain hosts add your domain to whatever you type. If Resend shows
-        <code>send.mail.yourdomain.com</code>, type only <b>send.mail</b> in the Name
-        field. Typing the whole thing creates a record ending in your domain twice, and
-        it silently never verifies.</p>
+        <span class="ic">IF YOU DO</span>
+        <p><b>Send from a subdomain, never your main domain.</b> Use
+        <code>mail.yourdomain.com</code>. If a batch is ever marked as spam, the damage
+        stays there and your normal business email keeps its clean reputation.</p>
       </div>
-
-      <p class="big">b. Get your key</p>
-      <ol class="do">
-        <li><a href="https://resend.com/api-keys" target="_blank" rel="noopener">resend.com/api-keys</a> &rarr; <b>Create API Key</b></li>
-        <li>Copy it now. It is shown once.</li>
-      </ol>
-
-      <p class="big">c. Put it in Lovable</p>
-      <ol class="do">
-        <li>Lovable &rarr; backend &rarr; <b>Secrets</b></li>
-        <li><code>RESEND_API_KEY</code> = the key you just copied</li>
-        <li><code>SENDER_EMAIL</code> = <code>hello@mail.yourdomain.com</code></li>
-      </ol>
-
-      <div class="note ok"><span class="ic">SAFE</span>
-        <p>Secrets live in that panel and nowhere else. They never go in a file, and
-        nothing there is readable from a visitor's browser.</p></div>
     </div>
   </article>
 </section>
@@ -631,11 +625,12 @@ first failure tells you the most.</p>
 
 <details>
   <summary>No emails arrive</summary>
-  <p>Three causes, in this order. <strong>One:</strong> your sending domain is not verified
-  at <a href="https://resend.com/domains" target="_blank" rel="noopener">resend.com/domains</a> &mdash;
-  it must say Verified, not Pending. <strong>Two:</strong> the scheduled jobs were never
-  created; run <code>SELECT jobname FROM cron.job;</code> and you should see four.
-  <strong>Three:</strong> it sent and went to spam. Check there before assuming failure.</p>
+  <p>Three causes, in this order. <strong>One:</strong> the scheduled jobs were never
+  created &mdash; run <code>SELECT jobname FROM cron.job;</code> and you should see four.
+  Without them every email queues up and none ever leaves. <strong>Two:</strong> it sent
+  and went to spam; check there before assuming failure. <strong>Three:</strong> the send
+  itself errored &mdash; ask Lovable <em>"show me the last 10 rows of email_logs"</em> and
+  read the error column rather than guessing.</p>
 </details>
 
 <details>
@@ -654,10 +649,11 @@ first failure tells you the most.</p>
 </details>
 
 <details>
-  <summary>My domain will not verify</summary>
-  <p>Almost always the doubled-name trap. Look at the record you created &mdash; if it
-  ends in your domain twice, delete it and re-add with just the prefix. DNS can also
-  take up to an hour, so if the record looks right, wait before changing anything.</p>
+  <summary>My domain will not verify (only if you added one)</summary>
+  <p>Almost always the doubled-name trap: most domain hosts append your domain to
+  whatever you type, so entering the full record name produces one ending in your domain
+  twice. Delete it and re-add using just the prefix. DNS can also take an hour, so if the
+  record looks right, wait before changing anything.</p>
 </details>
 
 <details>

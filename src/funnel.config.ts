@@ -28,8 +28,12 @@ export interface FunnelConfig {
     tagline: string
     domain: string
     supportEmail: string
-    /** Bulk mail sends from a subdomain so a spam complaint never poisons the root domain. */
-    sendingSubdomain: string
+    /**
+     * Bulk mail sends from a subdomain so a spam complaint never poisons the root
+     * domain. Optional on Lovable's own email, which sends without DNS setup;
+     * required the moment you switch to Resend or your own provider.
+     */
+    sendingSubdomain?: string
     logo?: string
   }
 
