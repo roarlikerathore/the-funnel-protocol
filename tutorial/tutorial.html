@@ -1,0 +1,553 @@
+<title>The Funnel Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --paper:#F4F6F8; --card:#FFFFFF; --ink:#16202B; --muted:#5C6B7A;
+  --rule:#D3DBE3; --rule-soft:#E4EAEF;
+  --act:#C2410C; --act-bg:#FDF0E9; --verify:#0F766E; --verify-bg:#E7F4F2;
+  --warn:#8A5A00; --warn-bg:#FBF3E2;
+  --mono-bg:#16202B; --mono-ink:#DCE6EF;
+  --shadow:0 1px 2px rgba(22,32,43,.05), 0 8px 24px -12px rgba(22,32,43,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+    --rule:#27333F; --rule-soft:#1E2833;
+    --act:#FB8B4C; --act-bg:#2A1810; --verify:#2DD4BF; --verify-bg:#0D2724;
+    --warn:#E0A94A; --warn-bg:#2A2113;
+    --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+  --rule:#27333F; --rule-soft:#1E2833;
+  --act:#FB8B4C; --act-bg:#2A1810; --verify:#2DD4BF; --verify-bg:#0D2724;
+  --warn:#E0A94A; --warn-bg:#2A2113;
+  --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 24px -12px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif; font-size:17px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:940px; margin:0 auto; padding:0 24px 96px}
+
+/* ---------- masthead ---------- */
+.mast{padding:64px 0 40px; border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  letter-spacing:.16em; text-transform:uppercase; color:var(--act); margin:0 0 20px;
+}
+h1{
+  font-family:Archivo,system-ui,sans-serif; font-weight:700; font-size:clamp(38px,7vw,64px);
+  line-height:1.02; letter-spacing:-.025em; margin:0 0 20px; text-wrap:balance;
+}
+.standfirst{font-size:20px; line-height:1.5; color:var(--muted); margin:0; max-width:56ch}
+
+.facts{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:0; margin-top:40px; border-top:1px solid var(--rule);
+}
+.fact{padding:18px 20px 18px 0; border-right:1px solid var(--rule-soft)}
+.fact:last-child{border-right:0}
+.fact dt{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 6px;
+}
+.fact dd{
+  margin:0; font-family:Archivo,sans-serif; font-weight:600; font-size:22px;
+  letter-spacing:-.01em; font-variant-numeric:tabular-nums;
+}
+
+/* ---------- sections ---------- */
+h2{
+  font-family:Archivo,sans-serif; font-weight:700; font-size:30px; letter-spacing:-.02em;
+  margin:72px 0 8px; text-wrap:balance;
+}
+.sec-note{color:var(--muted); margin:0 0 28px; max-width:62ch}
+p{max-width:64ch}
+
+/* ---------- prep checklist ---------- */
+.prep{
+  background:var(--card); border:1px solid var(--rule); border-radius:10px;
+  padding:8px 24px; box-shadow:var(--shadow);
+}
+.prep ul{list-style:none; margin:0; padding:0}
+.prep li{
+  display:flex; gap:16px; align-items:flex-start;
+  padding:16px 0; border-bottom:1px solid var(--rule-soft);
+}
+.prep li:last-child{border-bottom:0}
+.box{
+  flex:none; width:17px; height:17px; margin-top:5px; border-radius:3px;
+  border:1.5px solid var(--muted);
+}
+.prep b{font-family:Archivo,sans-serif; font-weight:600; display:block; font-size:16px}
+.prep small{color:var(--muted); font-size:14.5px; display:block; margin-top:2px}
+.prep a{color:var(--act); text-decoration-thickness:1px; text-underline-offset:2px}
+
+/* ---------- steps ---------- */
+.step{
+  display:grid; grid-template-columns:64px 1fr; gap:0;
+  margin-top:36px; align-items:start;
+}
+.spine{
+  position:sticky; top:24px; display:flex; flex-direction:column;
+  align-items:center; gap:10px; padding-top:26px;
+}
+.num{
+  font-family:Archivo,sans-serif; font-weight:700; font-size:15px;
+  width:36px; height:36px; border-radius:50%; display:grid; place-items:center;
+  background:var(--ink); color:var(--paper); font-variant-numeric:tabular-nums;
+}
+.thread{width:1.5px; flex:1; min-height:40px; background:var(--rule)}
+
+.card{
+  background:var(--card); border:1px solid var(--rule); border-radius:12px;
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.card-head{padding:22px 26px 20px; border-bottom:1px solid var(--rule-soft)}
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px}
+.chip{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.1em; text-transform:uppercase; padding:4px 9px; border-radius:4px;
+  border:1px solid var(--rule); color:var(--muted);
+}
+.chip.where{background:var(--act-bg); color:var(--act); border-color:transparent}
+.card-head h3{
+  font-family:Archivo,sans-serif; font-weight:600; font-size:23px;
+  letter-spacing:-.015em; margin:0; text-wrap:balance;
+}
+.card-body{padding:22px 26px 26px}
+.card-body > :first-child{margin-top:0}
+.card-body > :last-child{margin-bottom:0}
+
+ol.do{margin:0; padding-left:20px}
+ol.do li{margin-bottom:11px; padding-left:4px}
+ol.do li::marker{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--muted)}
+kbd{
+  font-family:"JetBrains Mono",monospace; font-size:13px; font-weight:600;
+  background:var(--paper); border:1px solid var(--rule); border-radius:4px; padding:1.5px 6px;
+}
+
+/* ---------- prompt blocks ---------- */
+.prompt{margin:20px 0}
+.prompt-bar{
+  display:flex; justify-content:space-between; align-items:center; gap:12px;
+  background:var(--mono-bg); border-radius:8px 8px 0 0; padding:9px 14px;
+}
+.prompt-bar span{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:#7E93A8;
+}
+.copy{
+  font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600;
+  background:transparent; color:var(--mono-ink); border:1px solid #33475C;
+  border-radius:5px; padding:5px 11px; cursor:pointer; transition:all .15s;
+}
+.copy:hover{background:#22303E}
+.copy:focus-visible{outline:2px solid var(--act); outline-offset:2px}
+.copy.done{color:#4ADE80; border-color:#4ADE80}
+pre{
+  margin:0; background:var(--mono-bg); color:var(--mono-ink);
+  border-radius:0 0 8px 8px; padding:18px; overflow-x:auto;
+  font-family:"JetBrains Mono",monospace; font-size:13px; line-height:1.72;
+}
+mark{background:rgba(251,139,76,.22); color:#FFB98A; padding:1px 3px; border-radius:3px}
+
+/* ---------- callouts ---------- */
+.note{
+  display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start;
+  border-radius:8px; padding:14px 16px; margin:20px 0; font-size:15.5px; line-height:1.55;
+}
+.note b{font-family:Archivo,sans-serif; font-weight:600}
+.note p{margin:0; max-width:none}
+.note .ic{font-family:"JetBrains Mono",monospace; font-size:11px; font-weight:600; letter-spacing:.08em; padding-top:2px}
+.note.ok{background:var(--verify-bg); color:var(--ink)} .note.ok .ic{color:var(--verify)}
+.note.warn{background:var(--warn-bg); color:var(--ink)} .note.warn .ic{color:var(--warn)}
+
+/* ---------- verify table ---------- */
+.tablewrap{overflow-x:auto; border:1px solid var(--rule); border-radius:10px; background:var(--card)}
+table{border-collapse:collapse; width:100%; font-size:15.5px; min-width:520px}
+th,td{text-align:left; padding:14px 18px; border-bottom:1px solid var(--rule-soft); vertical-align:top}
+th{
+  font-family:"JetBrains Mono",monospace; font-size:10px; font-weight:600;
+  letter-spacing:.13em; text-transform:uppercase; color:var(--muted);
+  border-bottom:1px solid var(--rule);
+}
+tr:last-child td{border-bottom:0}
+td:first-child{font-family:Archivo,sans-serif; font-weight:600; white-space:nowrap}
+
+/* ---------- trouble ---------- */
+details{
+  background:var(--card); border:1px solid var(--rule); border-radius:9px;
+  padding:0 20px; margin-bottom:10px;
+}
+summary{
+  font-family:Archivo,sans-serif; font-weight:600; font-size:16.5px;
+  padding:16px 0; cursor:pointer; list-style:none; display:flex;
+  justify-content:space-between; align-items:center; gap:12px;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+"; font-family:"JetBrains Mono",monospace; color:var(--act); font-size:19px}
+details[open] summary::after{content:"&ndash;"}
+summary:focus-visible{outline:2px solid var(--act); outline-offset:3px; border-radius:4px}
+details > p{margin:0 0 18px; font-size:15.5px; color:var(--muted); max-width:64ch}
+details > p strong{color:var(--ink)}
+
+footer{
+  margin-top:80px; padding-top:26px; border-top:2px solid var(--ink);
+  font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--muted);
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+}
+
+@media (max-width:640px){
+  body{font-size:16px}
+  .step{grid-template-columns:38px 1fr}
+  .spine{padding-top:22px}
+  .num{width:30px; height:30px; font-size:13px}
+  .card-head,.card-body{padding-left:18px; padding-right:18px}
+  .fact{border-right:0; border-bottom:1px solid var(--rule-soft)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+@media print{
+  .spine{position:static} .copy{display:none}
+  .card,details,.prep{box-shadow:none; break-inside:avoid}
+  .step{break-inside:avoid}
+}
+</style>
+
+<div class="wrap">
+
+<header class="mast">
+  <p class="eyebrow">Build procedure &middot; v1.0</p>
+  <h1>The Funnel Protocol</h1>
+  <p class="standfirst">A complete webinar funnel &mdash; landing page, registration, upsell, nine
+  personalised emails, pixel tracking &mdash; rebuilt for your niche without writing code.</p>
+
+  <dl class="facts">
+    <div class="fact"><dt>Total time</dt><dd>~15 min</dd></div>
+    <div class="fact"><dt>Lovable credits</dt><dd>1&ndash;2</dd></div>
+    <div class="fact"><dt>Steps</dt><dd>6</dd></div>
+    <div class="fact"><dt>Code written</dt><dd>None</dd></div>
+  </dl>
+</header>
+
+<h2>Why it works this way</h2>
+<p class="sec-note">Worth thirty seconds, because it explains every odd instruction that follows.</p>
+
+<p>Lovable charges credits per prompt. Building a funnel this size <em>inside</em> Lovable costs
+hundreds of credits and days of arguing with it about things it already got right.</p>
+
+<p>So Lovable barely does anything here. It creates an empty project with a database, then
+hosts the result. Everything in between happens in GitHub, where Claude works for free.
+Claude edits GitHub, Lovable notices the change and redeploys itself.</p>
+
+<div class="note ok">
+  <span class="ic">KEY</span>
+  <p><b>Never ask Lovable to build a feature.</b> If you find yourself typing a request into
+  Lovable after step 1, stop &mdash; that is credits burning. Ask Claude instead.</p>
+</div>
+
+<h2>Before you start</h2>
+<p class="sec-note">Five minutes of setup. Do these now so nothing blocks you mid-build.</p>
+
+<div class="prep">
+<ul>
+  <li><span class="box"></span><div><b>A Lovable account</b><small><a href="https://lovable.dev">lovable.dev</a> &mdash; the free tier is enough to begin.</small></div></li>
+  <li><span class="box"></span><div><b>A GitHub account</b><small><a href="https://github.com">github.com</a> &mdash; free. This is where your funnel actually lives.</small></div></li>
+  <li><span class="box"></span><div><b>Claude Code, installed and signed in</b><small>Connect the same GitHub account you just made.</small></div></li>
+  <li><span class="box"></span><div><b>Your answers ready</b><small>Open <code>intake/funnel-brief.md</code>. You can answer live instead, but having it filled in halves the build time.</small></div></li>
+  <li><span class="box"></span><div><b>A domain, a webinar link, a Meta Pixel ID</b><small>Not needed to build &mdash; needed to go live. Placeholders are used until you have them.</small></div></li>
+</ul>
+</div>
+
+<h2>The procedure</h2>
+<p class="sec-note">Each card names the app you should be looking at. If you are in a different
+window than the card says, you are in the wrong place.</p>
+
+<!-- 1 -->
+<section class="step">
+  <div class="spine"><div class="num">1</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">2 min</span><span class="chip">1&ndash;2 credits</span></div>
+      <h3>Create an empty project</h3>
+    </div>
+    <div class="card-body">
+      <ol class="do">
+        <li>Go to <b>lovable.dev</b> &rarr; <b>New Project</b>. Name it anything.</li>
+        <li>Paste the prompt below and send it.</li>
+        <li>Wait until it stops working. Roughly two minutes.</li>
+      </ol>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+        <pre>Set up a bare skeleton only. Do not design anything. Do not write any copy,
+styling, images, or components beyond what is listed here. I will build the
+real thing outside Lovable.
+
+1. Enable Lovable Cloud so the project has a database and edge functions.
+
+2. Create these routes, each rendering only an &lt;h1&gt; with its own name and
+   nothing else:
+   /  /vip  /ip  /thank-you  /thanks  /thanksalot  /preferences
+   /terms  /privacy  /refund  /disclaimer  /closed
+   /replay1  /replay2  /replay3  /control-room  /win
+
+3. Leave index.css and tailwind.config.ts at their defaults.
+
+Stop after that. Do not add features, do not improve anything, do not
+suggest next steps.</pre>
+      </div>
+
+      <div class="note ok">
+        <span class="ic">EXPECT</span>
+        <p><b>A plain page with one heading and no styling.</b> That is correct. It is supposed to
+        look unfinished &mdash; you are paying Lovable for a database, not a design.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- 2 -->
+<section class="step">
+  <div class="spine"><div class="num">2</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">30 sec</span></div>
+      <h3>Push it to GitHub</h3>
+    </div>
+    <div class="card-body">
+      <ol class="do">
+        <li>Top right of Lovable &rarr; the <b>GitHub</b> button.</li>
+        <li><b>Connect to GitHub</b> &rarr; authorise &rarr; <b>Create Repository</b>.</li>
+        <li>Copy the repository URL. It looks like <code>github.com/yourname/your-project</code>.</li>
+      </ol>
+      <div class="note warn">
+        <span class="ic">KEEP</span>
+        <p>Paste that URL somewhere you can find it. Step 4 needs it, and hunting for it later
+        is the most common place people stall.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- 3 -->
+<section class="step">
+  <div class="spine"><div class="num">3</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Claude Code</span><span class="chip">1 min</span></div>
+      <h3>Connect Claude to the same GitHub</h3>
+    </div>
+    <div class="card-body">
+      <ol class="do">
+        <li>Open Claude Code and sign in.</li>
+        <li>Connect GitHub &mdash; the <b>same account</b> Lovable just pushed to.</li>
+        <li>Confirm it can see the repository from step 2.</li>
+      </ol>
+      <div class="note warn">
+        <span class="ic">WATCH</span>
+        <p>If you have more than one GitHub account, this is where it goes wrong. Claude must be
+        on the account that owns the new repository, not your older personal one.</p>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- 4 -->
+<section class="step">
+  <div class="spine"><div class="num">4</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Claude Code</span><span class="chip">30 sec to send</span></div>
+      <h3>Hand Claude the build</h3>
+    </div>
+    <div class="card-body">
+      <p>Replace the line marked <code>&gt;&gt;&gt;</code> with your own repository URL. Change nothing else &mdash;
+      the rules underneath are what keep Claude from inventing your testimonials or leaking a key.</p>
+
+      <div class="prompt">
+        <div class="prompt-bar"><span>Paste into Claude Code</span><button class="copy" type="button">Copy</button></div>
+        <pre>You are setting up a webinar funnel for me using The Funnel Protocol kit.
+
+<mark>&gt;&gt;&gt; MY REPO: https://github.com/PUT-YOURS-HERE/your-project</mark>
+
+Do this in order and tell me when each step is done.
+
+1. Make a folder at ~/Documents/Funnels/&lt;repo-name&gt; and clone my repo into it.
+   If ~/Documents/Funnels does not exist, create it.
+
+2. Clone the kit next to it, then read kit/blueprint/00-BUILD-ORDER.md before
+   doing anything else. That file is the source of truth for the build.
+
+3. Check my repo is what you expect: a Lovable skeleton with placeholder routes
+   and a supabase folder. If it looks like something else, stop and tell me
+   rather than guessing.
+
+4. Interview me using kit/intake/funnel-brief.md. Ask in small batches, never
+   more than five questions in a message. If I say I have already filled the
+   brief in, read my copy and only ask about what is blank or contradictory.
+
+5. Build the funnel per the build order. Write everything into MY repo, commit
+   in logical chunks, and push when a stage is finished and building.
+
+6. Generate SETUP.sql at the root of my repo and hand it to me as a file.
+
+RULES, these matter more than being fast:
+- Never tell me to run a prompt in Lovable to build something. Lovable only
+  hosts. Every change is a file in GitHub.
+- Never invent my numbers, testimonials, results, or credentials. If I have not
+  given you a real one, use an obvious placeholder and add it to STILL-NEEDED.md.
+- Never put an API key in any file that ships to the browser.
+- Ask before anything that costs money or sends a real message to a real person.
+- When you are unsure between two readings of what I said, ask.</pre>
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- 5 -->
+<section class="step">
+  <div class="spine"><div class="num">5</div><div class="thread"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Claude Code</span><span class="chip">10&ndash;15 min</span></div>
+      <h3>Answer the questions</h3>
+    </div>
+    <div class="card-body">
+      <p>Claude asks in small batches. Answer in plain language &mdash; rough is fine, and it will
+      tell you when something is missing rather than filling the gap itself.</p>
+
+      <div class="note ok">
+        <span class="ic">TIP</span>
+        <p><b>Say "I don't have that yet" freely.</b> It becomes a visible placeholder and a line
+        in <code>STILL-NEEDED.md</code>. A funnel with three honest gaps ships; one with three
+        invented testimonials is a problem you cannot see until someone else does.</p>
+      </div>
+
+      <p>It will stop and show you the config before building. Read it. Fixing a wrong headline
+      there takes seconds; fixing it after nine emails quote it does not.</p>
+    </div>
+  </article>
+</section>
+
+<!-- 6 -->
+<section class="step">
+  <div class="spine"><div class="num">6</div><div class="thread" style="min-height:0"></div></div>
+  <article class="card">
+    <div class="card-head">
+      <div class="chips"><span class="chip where">In Lovable</span><span class="chip">2 min</span></div>
+      <h3>Run the one SQL file</h3>
+    </div>
+    <div class="card-body">
+      <p>Claude hands you <code>SETUP.sql</code>. This builds your database &mdash; the tables that hold
+      registrations, the email queue, your settings. It is one paste.</p>
+      <ol class="do">
+        <li>In Lovable, open the <b>backend / database</b> panel &rarr; <b>SQL editor</b>.</li>
+        <li>Paste the whole file.</li>
+        <li>Click <b>Run</b>. If it warns about a destructive statement, that is the
+        "remove the old version first" line. Run it anyway.</li>
+      </ol>
+      <div class="note ok"><span class="ic">DONE</span><p>Your funnel is live. Open your Lovable preview URL.</p></div>
+    </div>
+  </article>
+</section>
+
+<h2>Check it yourself</h2>
+<p class="sec-note">Do these five in order. Each one proves a different part of the chain,
+and they are ordered so the first failure tells you the most.</p>
+
+<div class="tablewrap">
+<table>
+  <thead><tr><th>Check</th><th>What you do</th><th>Correct result</th></tr></thead>
+  <tbody>
+    <tr><td>Pages</td><td>Visit <code>/</code>, <code>/vip</code>, <code>/thank-you</code></td><td>Your copy and colours, not placeholder text</td></tr>
+    <tr><td>Registration</td><td>Register with your own email</td><td>Three steps, then the upsell page</td></tr>
+    <tr><td>Database</td><td>Open the Control Room</td><td>Your test registration is listed</td></tr>
+    <tr><td>Email</td><td>Wait five minutes</td><td>Confirmation lands in your inbox</td></tr>
+    <tr><td>Pixel</td><td>Meta Events Manager</td><td>A <code>Lead</code> event from your test</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="note warn" style="margin-top:22px">
+  <span class="ic">FIRST</span>
+  <p><b>If email is the one that fails, it is almost always the sending domain.</b> Email
+  providers refuse to send from a domain you have not verified. Claude will tell you which
+  records to add and where &mdash; it is a five-minute job, once.</p>
+</div>
+
+<h2>When something goes wrong</h2>
+<p class="sec-note">In rough order of how often each actually happens.</p>
+
+<details>
+  <summary>Claude cannot find my repository</summary>
+  <p>Nearly always the GitHub connection, not the URL. Check Claude Code is connected to the
+  account that <strong>owns</strong> the repo &mdash; if you have a personal and a work account, it
+  is usually on the wrong one. Reconnect, then paste the step 4 prompt again.</p>
+</details>
+
+<details>
+  <summary>Lovable still shows the plain skeleton page</summary>
+  <p>Lovable redeploys when GitHub changes, but not instantly. Give it two minutes, then hard
+  refresh. If it is still bare, ask Claude <strong>"did you push?"</strong> &mdash; sometimes work is
+  committed locally but not pushed, and nothing reaches Lovable until it is.</p>
+</details>
+
+<details>
+  <summary>My emails are not arriving</summary>
+  <p>Three causes, in order of likelihood. <strong>One:</strong> the sending domain is not
+  verified with your email provider. <strong>Two:</strong> the scheduled job that sends queued
+  email was never created &mdash; it is in <code>SETUP.sql</code>, so check that ran fully.
+  <strong>Three:</strong> it sent and landed in spam. Check there before assuming it failed.</p>
+</details>
+
+<details>
+  <summary>Claude wants me to run something in Lovable</summary>
+  <p>Only ever for <code>SETUP.sql</code> in step 6. Anything else means it drifted from the
+  build order. Reply: <strong>"No &mdash; make that change in GitHub instead."</strong> It will
+  correct itself.</p>
+</details>
+
+<details>
+  <summary>I ran out of Lovable credits</summary>
+  <p>Then something asked Lovable to build. The whole design of this procedure is that steps
+  3&ndash;5 cost nothing. Check you did not paste the step 4 prompt into Lovable by mistake &mdash; it
+  is long, and Lovable will happily try to act on it.</p>
+</details>
+
+<details>
+  <summary>The funnel is built but numbers and quotes look fake</summary>
+  <p>They are, deliberately. Open <code>STILL-NEEDED.md</code> in your project &mdash; every
+  placeholder is listed there. Replace them with real ones and ask Claude to update the funnel.
+  Do not launch ads until that file is empty.</p>
+</details>
+
+<footer>
+  <span>The Funnel Protocol &middot; v1.0</span>
+  <span>Lovable &rarr; GitHub &rarr; Claude</span>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    var pre = btn.closest(".prompt").querySelector("pre");
+    navigator.clipboard.writeText(pre.innerText).then(function(){
+      btn.textContent = "Copied"; btn.classList.add("done");
+      setTimeout(function(){ btn.textContent = "Copy"; btn.classList.remove("done"); }, 1800);
+    });
+  });
+});
+</script>
