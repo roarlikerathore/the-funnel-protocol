@@ -20,6 +20,13 @@ export interface Offer {
   items: OfferItem[]
 }
 
+/** Everything below is optional. A section whose config is absent renders nothing,
+ *  so a lean funnel and a full one run the same components. */
+export interface Speaker  { name: string; role: string; bio: string; photo?: string; credentials: string[] }
+export interface Method   { number: number; title: string; description: string }
+export interface Bonus    { name: string; worth: string; description?: string; image?: string }
+export interface RewardTier { referrals: number; reward: string }
+
 export interface FunnelConfig {
   brand: {
     name: string
@@ -95,6 +102,25 @@ export interface FunnelConfig {
     whatsappGroup?: string
     calendar?: string
     replay?: string
+  }
+
+  /** The richer landing page sections. Omit any of these and that section disappears. */
+  sections: {
+    topBanner?: string
+    /** Who is presenting. Without this the speaker block is skipped. */
+    speaker?: Speaker
+    /** The three shifts, secrets or pillars the event is built on. */
+    methods?: Method[]
+    /** Life before vs after. Two columns, and the contrast does the arguing. */
+    beforeAfter?: { before: string[]; after: string[] }
+    /** Extras included with registration, distinct from the paid offer. */
+    bonuses?: Bonus[]
+    /** A promise you can actually keep. Omit rather than invent one. */
+    guarantee?: string
+    /** Why now. Seats, a closing date, or nothing. */
+    urgency?: { seatsTotal?: number; closesAt?: string; line?: string }
+    /** Referral rewards. Needs the referrals table, which SETUP.sql creates. */
+    rewards?: RewardTier[]
   }
 
   tracking: {
@@ -181,6 +207,8 @@ export const funnel: FunnelConfig = {
   theme: { primary: '#1E3A5F', accent: '#C9A227', mode: 'dark', mood: ['clear', 'direct'] },
 
   links: {},
+
+  sections: {},
 
   tracking: {},
 

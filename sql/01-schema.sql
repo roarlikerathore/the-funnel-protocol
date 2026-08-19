@@ -56,6 +56,9 @@ CREATE TABLE IF NOT EXISTS public.leads (
   challenge    TEXT,                       -- one of config.audience.challenges
   visitor_id   TEXT,
   whatsapp_opted_in BOOLEAN NOT NULL DEFAULT false,
+  -- Their personal join link, when the webinar platform issues one. Attendance
+  -- can only be attributed back to a person if they use their own link.
+  webinar_join_url TEXT,
   utm_source   TEXT, utm_medium TEXT, utm_campaign TEXT, utm_content TEXT, utm_term TEXT,
   created_at   TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (email)

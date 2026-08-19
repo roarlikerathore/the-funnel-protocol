@@ -13,6 +13,10 @@ INSERT INTO public.site_settings (setting_key, setting_value) VALUES
   ('event_timezone',          '{{EVENT_TIMEZONE}}'),
   ('event_days',              '{{EVENT_DAYS}}'),
   ('join_url',                '{{JOIN_URL}}'),
+  -- Auto-registering people on the webinar platform is optional. Leave webinar_id
+  -- empty and the funnel simply hands out join_url instead.
+  ('webinar_platform',        '{{WEBINAR_PLATFORM}}'),
+  ('webinar_id',              ''),
   ('registration_open',       'true'),
   -- Long enough for the upsell and downsell to resolve, so the confirmation
   -- knows what the person actually bought before it decides what to say.
