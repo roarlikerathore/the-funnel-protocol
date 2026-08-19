@@ -20,14 +20,17 @@ hundreds of credits and a week of arguing with it. So Lovable does almost nothin
 Lovable is a host with a database attached. GitHub is where the work happens.
 Claude edits GitHub, Lovable notices and redeploys itself. That is the whole trick.
 
-## The six steps
+## How to run it
 
-1. **Lovable** — paste `prompts/01-lovable-seed.md`. Wait 2 minutes.
-2. **GitHub** — click Lovable's GitHub button. One click.
-3. **Claude Code** — install it, sign in, connect the same GitHub account.
-4. **Claude Code** — paste `prompts/02-claude-bootstrap.md`. It makes a folder and pulls the project down.
-5. **Answer the questions.** Claude interviews you, or you fill `intake/funnel-brief.md` first.
-6. **Paste one SQL file** into Lovable's database editor. Done.
+Open **`RUN-THIS.md`**. It contains two prompts, one for each app. Nothing else
+is required of you.
+
+1. Paste 1 → Lovable. Creates an empty project with a database.
+2. Click GitHub. Copy the URL.
+3. Paste 2 → Claude Code. It interviews you and builds everything.
+4. Paste the SQL file Claude gives you back into Lovable. Done.
+
+The longer walkthrough, with what each screen should look like, is in `tutorial/`.
 
 Full walkthrough: `tutorial/tutorial.html`
 How the repos stay separate: `REPO-MODEL.md`
