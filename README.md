@@ -95,8 +95,9 @@ These are combined into a single `SETUP.sql` that you paste once.
 | Path | What it is |
 |---|---|
 | `RUN-THIS.md` | **All three paths. Start here** |
-| `tutorial/quickstart.html` | **Part one.** Seven steps, every click. Built to print |
-| `tutorial/part-two.html` | **Part two.** AI reminder calls, Zoom, your own domain |
+| `tutorial/cheat-sheet.html` | **Everything in one page.** Build, calls, traffic. Start here |
+| `tutorial/quickstart.html` | Just part one, if you want it separate |
+| `tutorial/part-two.html` | Just the calls, Zoom and own-domain part |
 | `tutorial/path-c.html` | The same steps with the reasoning shown, plus troubleshooting |
 | `kit/intake/funnel-brief.md` | Every question you will be asked |
 | `kit/blueprint/00-BUILD-ORDER.md` | How it is built, for Claude Code |

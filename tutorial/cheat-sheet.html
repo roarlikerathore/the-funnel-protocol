@@ -1,0 +1,639 @@
+<title>Funnel Cheat Sheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --paper:#FBFAF8; --card:#FFFFFF; --ink:#16202B; --muted:#5C6B7A;
+  --rule:#E1E6EB; --act:#C2410C; --act-soft:#FDF0E9;
+  --verify:#0F766E; --verify-soft:#E7F4F2;
+  --mono-bg:#16202B; --mono-ink:#DCE6EF;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+    --rule:#27333F; --act:#FB8B4C; --act-soft:#2A1810;
+    --verify:#2DD4BF; --verify-soft:#0D2724;
+    --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F161D; --card:#161F28; --ink:#E6ECF2; --muted:#93A4B4;
+  --rule:#27333F; --act:#FB8B4C; --act-soft:#2A1810;
+  --verify:#2DD4BF; --verify-soft:#0D2724;
+  --mono-bg:#0A1017; --mono-ink:#CFDBE6;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Source Serif 4",Georgia,serif;font-size:17px;line-height:1.6}
+.wrap{max-width:760px;margin:0 auto;padding:0 26px 80px}
+
+header{padding:60px 0 32px}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--act);margin:0 0 16px}
+h1{font-family:Archivo,sans-serif;font-weight:800;font-size:clamp(34px,7vw,52px);
+  line-height:1.03;letter-spacing:-.025em;margin:0 0 16px;text-wrap:balance}
+.lede{font-size:19px;color:var(--muted);margin:0;max-width:52ch}
+
+.need{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;padding-top:26px;
+  border-top:1px solid var(--rule)}
+.need span{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;padding:7px 12px;border-radius:5px;
+  background:var(--card);border:1px solid var(--rule);color:var(--muted)}
+
+/* ---- steps ---- */
+.step{margin-top:52px;break-inside:avoid;page-break-inside:avoid}
+.head{display:flex;align-items:baseline;gap:16px;padding-bottom:14px;
+  border-bottom:2px solid var(--ink);margin-bottom:22px}
+.n{font-family:Archivo,sans-serif;font-weight:800;font-size:44px;line-height:1;
+  letter-spacing:-.04em;color:var(--act);font-variant-numeric:tabular-nums}
+.head h2{font-family:Archivo,sans-serif;font-weight:700;font-size:25px;
+  letter-spacing:-.02em;margin:0;flex:1;text-wrap:balance}
+.mins{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+
+.where{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--act);
+  background:var(--act-soft);display:inline-block;padding:5px 11px;border-radius:5px;
+  margin-bottom:18px}
+
+ol.clicks{counter-reset:c;list-style:none;margin:0;padding:0}
+ol.clicks li{counter-increment:c;position:relative;padding:0 0 14px 40px;
+  border-left:1px solid var(--rule);margin-left:11px}
+ol.clicks li:last-child{border-left-color:transparent;padding-bottom:0}
+ol.clicks li::before{content:counter(c);position:absolute;left:-11px;top:0;
+  width:22px;height:22px;border-radius:50%;background:var(--ink);color:var(--paper);
+  font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  display:grid;place-items:center}
+ol.clicks b{font-family:Archivo,sans-serif;font-weight:600}
+ol.clicks small{display:block;color:var(--muted);font-size:15px;margin-top:2px}
+
+.tip{background:var(--verify-soft);border-radius:8px;padding:13px 16px;margin:20px 0 0;
+  font-size:15.5px;line-height:1.5}
+.tip b{font-family:Archivo,sans-serif;font-weight:600;color:var(--verify)}
+
+/* ---- prompts ---- */
+.p-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  background:var(--mono-bg);border-radius:8px 8px 0 0;padding:9px 14px;margin-top:20px}
+.p-bar span{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:#7E93A8}
+.copy{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;
+  background:transparent;color:var(--mono-ink);border:1px solid #33475C;border-radius:5px;
+  padding:5px 11px;cursor:pointer}
+.copy:hover{background:#22303E}
+.copy:focus-visible{outline:2px solid var(--act);outline-offset:2px}
+.copy.ok{color:#4ADE80;border-color:#4ADE80}
+pre{margin:0;background:var(--mono-bg);color:var(--mono-ink);border-radius:0 0 8px 8px;
+  padding:17px;overflow-x:auto;font-family:"JetBrains Mono",monospace;
+  font-size:12.5px;line-height:1.7}
+
+/* ---- final check ---- */
+.check{margin-top:56px;padding-top:30px;border-top:2px solid var(--ink)}
+.check h2{font-family:Archivo,sans-serif;font-weight:700;font-size:25px;margin:0 0 20px}
+.check ol{list-style:none;counter-reset:v;margin:0;padding:0}
+.check li{counter-increment:v;display:flex;gap:14px;padding:13px 0;
+  border-bottom:1px solid var(--rule)}
+.check li:last-child{border-bottom:0}
+.check li::before{content:counter(v);flex:none;width:24px;height:24px;border-radius:50%;
+  border:1.5px solid var(--act);color:var(--act);font-family:"JetBrains Mono",monospace;
+  font-size:11px;font-weight:600;display:grid;place-items:center}
+.check b{font-family:Archivo,sans-serif;font-weight:600;display:block}
+.check small{color:var(--muted);font-size:15px}
+
+footer{margin-top:56px;padding-top:22px;border-top:1px solid var(--rule);
+  font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:8px}
+
+@media (max-width:600px){
+  body{font-size:16px}
+  .n{font-size:34px}
+  .head h2{font-size:21px}
+  .mins{display:none}
+}
+@media print{
+  :root{--paper:#fff;--card:#fff;--ink:#111;--muted:#555;--rule:#ddd;
+         --act:#B3400C;--act-soft:#FBEFE8;--verify:#0B5F59;--verify-soft:#EDF6F5}
+  .copy{display:none}
+  .wrap{max-width:none;padding:0}
+  .step{page-break-inside:avoid}
+  pre{white-space:pre-wrap;word-break:break-word;background:#F4F5F7;color:#111;
+      border:1px solid #ddd}
+  .p-bar{background:#F4F5F7;border:1px solid #ddd;border-bottom:0}
+  .p-bar span{color:#555}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<style>
+.part{margin-top:70px;padding-top:34px;border-top:3px solid var(--ink)}
+.part .badge{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--act);background:var(--act-soft);padding:6px 12px;border-radius:5px;
+  display:inline-block;margin-bottom:14px}
+.part h2{font-family:Archivo,sans-serif;font-weight:800;font-size:34px;letter-spacing:-.025em;margin:0 0 10px;text-wrap:balance}
+.part .sub{color:var(--muted);margin:0;max-width:56ch;font-size:18px}
+.soon{background:var(--card);border:1px dashed var(--rule);border-radius:10px;padding:18px 20px;margin-top:18px}
+.soon h3{font-family:Archivo,sans-serif;font-weight:700;font-size:17px;margin:0 0 5px}
+.soon p{margin:0;color:var(--muted);font-size:15px;max-width:60ch}
+.soon .tag{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);border:1px solid var(--rule);border-radius:4px;padding:3px 8px;
+  display:inline-block;margin-bottom:9px}
+.warn{background:#FBF3E2;color:#16202B;border-radius:8px;padding:13px 16px;margin:20px 0 0;font-size:15.5px;line-height:1.5}
+.warn b{font-family:Archivo,sans-serif;font-weight:600;color:#8A5A00}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .warn{background:#2A2113;color:#E6ECF2}
+  :root:not([data-theme="light"]) .warn b{color:#E0A94A}}
+:root[data-theme="dark"] .warn{background:#2A2113;color:#E6ECF2}
+:root[data-theme="dark"] .warn b{color:#E0A94A}
+.toc{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:6px 22px;margin-top:34px}
+.toc a{display:flex;justify-content:space-between;gap:14px;padding:13px 0;border-bottom:1px solid var(--rule);
+  text-decoration:none;color:inherit}
+.toc a:last-child{border-bottom:0}
+.toc b{font-family:Archivo,sans-serif;font-weight:600}
+.toc span{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);white-space:nowrap}
+@media print{.warn{background:#FBF3E2;color:#111}.soon{border-style:solid}.part{page-break-before:always}}
+</style>
+<div class="wrap">
+
+<header>
+  <p class="kicker">The Funnel Protocol &middot; Complete cheat sheet</p>
+  <h1>Build your funnel, fill it, and feed it</h1>
+  <p class="lede">Everything in one place. Build it, add reminder calls, then send
+  people to it. No coding at any point.</p>
+  <div class="need">
+    <span>~40 min total</span>
+    <span>2 free accounts</span>
+    <span>No coding</span>
+  </div>
+
+  <div class="toc">
+    <a href="#part1"><b>Part 1 &mdash; Build it</b><span>7 steps &middot; 20 min</span></a>
+    <a href="#part2"><b>Part 2 &mdash; Add reminder calls</b><span>4 steps &middot; 15 min</span></a>
+    <a href="#part3"><b>Part 3 &mdash; Get people to it</b><span>4 steps &middot; ongoing</span></a>
+  </div>
+</header>
+
+<section class="part" id="part1">
+  <span class="badge">Part 1</span>
+  <h2>Build it</h2>
+  <p class="sub">From nothing to a funnel taking registrations.</p>
+</section>
+
+<!-- 1 -->
+<section class="step">
+  <div class="head"><span class="n">1</span><h2>Get your own copy</h2><span class="mins">2 min</span></div>
+  <p class="where">On GitHub</p>
+  <ol class="clicks">
+    <li><b>Open github.com/roarlikerathore/the-funnel-protocol</b></li>
+    <li><b>Sign in</b><small>No account? Sign up. Free, one minute.</small></li>
+    <li><b>Click the green &ldquo;Use this template&rdquo; button</b><small>Top right.</small></li>
+    <li><b>Click &ldquo;Create a new repository&rdquo;</b></li>
+    <li><b>Name it, choose Private, click Create</b></li>
+  </ol>
+  <div class="tip"><b>No green button?</b> You are not signed in. Sign in, reload, it appears.</div>
+</section>
+
+<!-- 2 -->
+<section class="step">
+  <div class="head"><span class="n">2</span><h2>Open it in Lovable</h2><span class="mins">3 min</span></div>
+  <p class="where">In Lovable</p>
+  <ol class="clicks">
+    <li><b>Go to lovable.dev and sign in</b></li>
+    <li><b>New Project &rarr; Import from GitHub</b></li>
+    <li><b>Authorise, then pick the repository you just made</b></li>
+    <li><b>Say yes to Lovable Cloud</b><small>That is your database and your email sending.</small></li>
+  </ol>
+  <div class="tip"><b>It says PLACEHOLDER everywhere.</b> Correct. You have the machine; your words go in next.</div>
+</section>
+
+<!-- 3 -->
+<section class="step">
+  <div class="head"><span class="n">3</span><h2>Put your words in</h2><span class="mins">12 min</span></div>
+  <p class="where">In Lovable</p>
+  <ol class="clicks">
+    <li><b>Copy the text below into Notes or Word</b></li>
+    <li><b>Replace every [bracket] with your own answer</b><small>Plain language. No answer? Write SKIP.</small></li>
+    <li><b>Paste the whole thing into Lovable&rsquo;s chat and send</b></li>
+    <li><b>Read the list of what is still missing</b></li>
+  </ol>
+
+  <div class="p-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+  <pre>Open src/funnel.config.ts and replace the values in the `funnel` object with
+mine, below. Keep the types exactly as they are. Do not touch any other file.
+
+BRAND
+  name:         [your brand]
+  host:         [how you sign an email]
+  domain:       [yourdomain.com]
+  supportEmail: [your email]
+
+EVENT
+  name:            [event name]
+  days:            [3]
+  startDate:       [2026-09-15]
+  startTime:       [20:00]
+  timezone:        [Asia/Kolkata]
+  durationMinutes: [90]
+  language:        [English]
+  platform:        [Zoom]
+  joinUrl:         [your joining link]
+  isFree:          [true]
+
+PROMISE
+  headline:    [the big claim, not a topic]
+  subheadline: [one sentence under it]
+  bigIdea:     [the one belief that has to change]
+
+AUDIENCE
+  forWhom:    [3 to 5 lines, one per type of person]
+  notForWhom: [3 lines. Be specific. Be willing to lose people]
+  profiles:   [6 lines. Who they are in life]
+  challenges: [5 lines. Their struggle, in their words]
+
+SESSIONS  (or "the secrets" if it is one session)
+  1. [title] | [what they walk away with]
+  2. [title] | [what they walk away with]
+  3. [title] | [what they walk away with]
+
+SECTIONS
+  topBanner:      [one line for the very top bar, or SKIP]
+  urgencyLine:    [one line under the main button. Real reasons only]
+  foldBelowHero:  [true]
+  stickyBar:      [true]
+  speaker:        [your name] | [your role] | [2-3 sentence bio]
+    credentials:  [one per line: years, people served, awards, featured in]
+  methods:        [3 lines: title | description. Your philosophy in three steps]
+  beforeAfter:    before [3 lines] / after [3 lines]
+  benefits:       [3-4 lines: title | description. What changes when they use it]
+  bonuses:        [name | worth, one per line. Free resources they get]
+  valueStack:     [name | number, one per line] currency [INR]
+  guarantee:      [one line, or SKIP]
+  videos:         landing [embed URL or SKIP] / thankYou [embed URL or SKIP]
+
+PROOF
+  credibility:  [2-3 sentences on why you are worth their evening]
+  stats:        [label | value, one per line, or NONE]
+  testimonials: [name | quote | result, one per line, or NONE]
+
+OFFER  (write SKIP if you are not selling one)
+  upsell: [name] | [price] | [currency] | [checkout link]
+    items: [item | worth, one per line]
+
+THEME
+  primary: [#hex]
+  accent:  [#hex]
+  mode:    [dark or light]
+
+LINKS
+  whatsappGroup: [link or SKIP]
+  calendar:      [link or SKIP]
+
+LEGAL
+  entity:       [registered company name]
+  address:      [registered address]
+  jurisdiction: [city, country]
+  refundPolicy: [one line]
+  disclaimer:   [anything you must legally show]
+
+Rules:
+- Anything I marked SKIP stays as PLACEHOLDER. Do not invent it.
+- When done, list every field still saying PLACEHOLDER.
+- Do not add features, do not redesign anything, do not touch other files.</pre>
+
+  <div class="warn"><b>Do not let a session title give away its answer.</b>
+  &ldquo;How X Works&rdquo; tells them the answer and removes the reason to show up.
+  &ldquo;Where X Actually Comes From&rdquo; makes them need to be there. This one line
+  moves attendance more than anything else on the page.</div>
+
+  <div class="tip"><b>What foldBelowHero does.</b> Everything under the headline starts
+  hidden behind one button. People already sold register straight away. People who need
+  convincing choose to open it. Nobody is dragged down an endless page.</div>
+</section>
+
+<!-- 4 -->
+<section class="step">
+  <div class="head"><span class="n">4</span><h2>Make the emails personal</h2><span class="mins">5 min</span></div>
+  <p class="where">In Lovable</p>
+  <ol class="clicks">
+    <li><b>Copy the text below</b></li>
+    <li><b>Paste it into Lovable&rsquo;s chat and send</b></li>
+  </ol>
+
+  <div class="p-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+  <pre>Open supabase/seed-blocks.sql and fill in the block bodies. Write them in my
+voice, using the exact profile and challenge wording already in
+src/funnel.config.ts. Do not change any other file.
+
+For EACH of my 6 profiles, write PROFILE_MIRROR: two or three short lines
+describing that person's actual day back to them. No advice, no pitch.
+
+For EACH of my 6 profiles, write CTA_LINE: one line on why turning up matters
+for that specific person.
+
+For EACH of my 5 challenges, write PAIN_TWIST: name the struggle, then go one
+level under it to the thing behind it, and reframe it as a structural problem
+rather than a personal failing.
+
+For EACH of my 5 challenges, write PROOF: two or three lines of reasoning for
+why that struggle happens. No statistics I cannot source, no case studies, no
+client results. Explanation only.
+
+Rules:
+- Write like I am writing to one friend, not to a list.
+- Plain sentences. Short lines. No exclamation marks, no hype words.
+- Never invent a number, a client, or a result.
+- Do not give away any session's reveal.
+- Replace every NEEDS-COPY. Tell me if any are left.</pre>
+
+  <div class="tip"><b>This is the whole point of the email engine.</b> Everyone picked a
+  situation and a struggle when they registered. Six situations by five struggles means
+  30 versions of every email, from one piece of writing.</div>
+</section>
+
+<!-- 5 -->
+<section class="step">
+  <div class="head"><span class="n">5</span><h2>Build the database</h2><span class="mins">3 min</span></div>
+  <p class="where">In Lovable</p>
+  <ol class="clicks">
+    <li><b>Copy the text below, paste it in, send</b></li>
+    <li><b>Check it lists four jobs at the end</b></li>
+  </ol>
+
+  <div class="p-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+  <pre>Read src/funnel.config.ts, then:
+
+1. Run scripts/build-emails.mjs to generate the email SQL.
+2. Combine, in this order, into one file called SETUP.sql at the project root:
+   sql/01-schema.sql, then sql/02-seeds.sql.tpl with every {{TOKEN}} replaced
+   from funnel.config.ts, then the generated email SQL, then
+   supabase/seed-blocks.sql, then sql/03-cron.sql.tpl with my project URL and
+   anon key filled in.
+3. Confirm no {{TOKEN}} remains anywhere in SETUP.sql. Tell me if any does.
+4. Run SETUP.sql against my database.
+5. Then run this and show me the result:
+   SELECT jobname, schedule, active FROM cron.job;
+
+Do not change any other file.</pre>
+
+  <div class="tip"><b>Four jobs.</b> They are what actually send your emails. Without them
+  everything piles up and nothing goes out.</div>
+</section>
+
+<!-- 6 -->
+<section class="step">
+  <div class="head"><span class="n">6</span><h2>Send yourself a test email</h2><span class="mins">2 min</span></div>
+  <p class="where">In Lovable</p>
+  <ol class="clicks">
+    <li><b>Copy the text below and put your own address in it</b></li>
+    <li><b>Paste it in, send</b></li>
+    <li><b>Check your inbox, then your spam folder</b></li>
+  </ol>
+
+  <div class="p-bar"><span>Paste into Lovable</span><button class="copy" type="button">Copy</button></div>
+  <pre>Send me one test email so I know the pipeline works.
+
+1. Confirm site_settings.email_provider is set to 'lovable'.
+2. Confirm the LOVABLE_API_KEY secret exists in this project.
+3. Send a test email to [YOUR EMAIL] with the subject "Funnel test" using
+   the shared mailer in supabase/functions/_shared/mailer.ts.
+4. Tell me exactly what came back. If it failed, show me the error.
+
+Change nothing else.</pre>
+
+  <div class="tip"><b>Nothing to sign up for.</b> Lovable sends your email itself. Landing
+  in spam still counts as working.</div>
+</section>
+
+<!-- 7 -->
+<section class="step">
+  <div class="head"><span class="n">7</span><h2>Register on your own funnel</h2><span class="mins">3 min</span></div>
+  <p class="where">On your own site</p>
+  <ol class="clicks">
+    <li><b>Open your site and register, exactly as a stranger would</b></li>
+    <li><b>Use your real email and phone</b></li>
+    <li><b>Open /control-room and enter the code it emails you</b></li>
+    <li><b>Check your registration is listed</b></li>
+    <li><b>Wait five minutes for your confirmation email</b></li>
+  </ol>
+  <div class="warn"><b>Search your live site for the word PLACEHOLDER.</b> Anything left is
+  something you skipped. Fix it before you spend a rupee on traffic.</div>
+</section>
+
+<section class="part" id="part2">
+  <span class="badge">Part 2</span>
+  <h2>Add reminder calls</h2>
+  <p class="sub">The only remaining thing that changes how many people are in the room,
+  rather than how many signed up.</p>
+  <div class="warn"><b>This costs money.</b> Calls are billed per minute. Budget for it,
+  and start with one event rather than a setting you switch on and forget.</div>
+</section>
+
+<!-- 8 -->
+<section class="step">
+  <div class="head"><span class="n">8</span><h2>Make a Bolna account</h2><span class="mins">5 min</span></div>
+  <p class="where">On bolna.ai</p>
+  <ol class="clicks">
+    <li><b>Go to bolna.ai and sign up</b></li>
+    <li><b>Add a small amount of credit</b><small>You are testing, not launching.</small></li>
+    <li><b>Create an agent</b><small>This is the voice that calls your registrants.</small></li>
+    <li><b>Copy the Agent ID</b></li>
+    <li><b>Settings &rarr; API Keys &rarr; create one and copy it</b><small>Shown once.</small></li>
+  </ol>
+</section>
+
+<!-- 9 -->
+<section class="step">
+  <div class="head"><span class="n">9</span><h2>Write the call script</h2><span class="mins">5 min</span></div>
+  <p class="where">On bolna.ai</p>
+
+  <div class="p-bar"><span>Your agent script</span><button class="copy" type="button">Copy</button></div>
+  <pre>You are calling someone who signed up for a free online session.
+
+Say this, naturally, and keep it under twenty seconds:
+
+"Hi, is that [first name]? This is a quick reminder from [YOUR NAME]'s team.
+Your free online session starts in about thirty minutes. You'll find the
+joining link in your email. Will you be able to join us?"
+
+If they say yes: "Great, see you there." End the call.
+If they say no: "No problem, thanks for letting me know." End the call.
+If they ask something you cannot answer: "I'll have someone email you about
+that." End the call.
+
+Never make promises about results, money, or outcomes.
+Never pressure anyone. If they want to go, let them go.</pre>
+
+  <div class="warn"><b>Voice providers check your script, and they are strict.</b> Scripts
+  get rejected for words that are harmless in context. Avoid anything sounding like a
+  money guarantee, anything about earnings, and unverifiable claims like &ldquo;the top
+  3%&rdquo;. If your brand name itself sounds dramatic, use your event name instead.
+  Plain and boring gets approved. Clever does not.</div>
+</section>
+
+<!-- 10 -->
+<section class="step">
+  <div class="head"><span class="n">10</span><h2>Connect it</h2><span class="mins">3 min</span></div>
+  <p class="where">In your Control Room</p>
+  <ol class="clicks">
+    <li><b>Open yourdomain.com/control-room</b></li>
+    <li><b>Click &ldquo;Email me a code&rdquo;, then enter it</b></li>
+    <li><b>Go to the Settings tab</b></li>
+    <li><b>Fill in these five</b><small>
+      <code>bolna_enabled</code> &rarr; true<br>
+      <code>bolna_agent_id</code> &rarr; your Agent ID<br>
+      <code>bolna_api_key</code> &rarr; your API key<br>
+      <code>bolna_lead_time_minutes</code> &rarr; 30<br>
+      <code>bolna_default_country_code</code> &rarr; e.g. +91</small></li>
+    <li><b>Click away from each field to save it</b></li>
+  </ol>
+  <div class="tip"><b>Your key is safe.</b> Stored where only the backend can read it,
+  never in a file, never anywhere a visitor&rsquo;s browser can reach.</div>
+</section>
+
+<!-- 11 -->
+<section class="step">
+  <div class="head"><span class="n">11</span><h2>Test the call on yourself</h2><span class="mins">2 min</span></div>
+  <p class="where">On your own site</p>
+  <ol class="clicks">
+    <li><b>Register on your funnel with your real number</b></li>
+    <li><b>Wait for the call</b><small>Thirty minutes before your event. To test sooner,
+      temporarily set the event date to today.</small></li>
+    <li><b>Answer it and listen to all of it</b></li>
+    <li><b>Check the Control Room lists the call</b></li>
+  </ol>
+  <div class="warn"><b>Never skip this.</b> The first time you hear your own script out
+  loud is when you notice what is wrong with it. Do not let a registrant be the first
+  person to hear it.</div>
+</section>
+
+<section class="part" id="part3">
+  <span class="badge">Part 3</span>
+  <h2>Get people to it</h2>
+  <p class="sub">A funnel with no traffic is a website. Two routes: paid and free.
+  Start free, add paid once you know the funnel converts.</p>
+</section>
+
+<!-- 12 -->
+<section class="step">
+  <div class="head"><span class="n">12</span><h2>Prove the pixel is working</h2><span class="mins">10 min</span></div>
+  <p class="where">Meta &middot; then your site</p>
+  <p>Do this <b>before</b> spending anything. An ad running against a broken pixel spends
+  real money and learns nothing.</p>
+  <ol class="clicks">
+    <li><b>Go to business.facebook.com/events_manager</b></li>
+    <li><b>Connect data source &rarr; Web &rarr; name it</b></li>
+    <li><b>Copy the pixel ID</b><small>The long number.</small></li>
+    <li><b>Paste this into Lovable</b>
+      <small><code>Set tracking.metaPixelId in src/funnel.config.ts to [your ID]. Change nothing else.</code></small></li>
+    <li><b>Back in Events Manager, open &ldquo;Test Events&rdquo;</b></li>
+    <li><b>Enter your site address and register on your own funnel</b></li>
+    <li><b>Watch for PageView, then Lead</b><small>If Lead never appears, stop and fix it.
+      That is the event every ad will optimise towards.</small></li>
+  </ol>
+  <div class="tip"><b>Advanced matching is already built in.</b> Registrations are matched
+  to real people rather than guessed at, which is most of the difference between ads that
+  find your buyers and ads that do not.</div>
+</section>
+
+<!-- 13 -->
+<section class="step">
+  <div class="head"><span class="n">13</span><h2>Free traffic first</h2><span class="mins">Ongoing</span></div>
+  <p class="where">Wherever you already have people</p>
+  <p>Your first fifty registrations should cost nothing. They tell you whether the funnel
+  converts before you pay to find out.</p>
+  <ol class="clicks">
+    <li><b>Put the link everywhere you already are</b>
+      <small>Instagram bio, YouTube descriptions, LinkedIn, email signature, WhatsApp status.</small></li>
+    <li><b>Message people individually, not in bulk</b>
+      <small>Twenty personal messages beat one broadcast to a thousand. It is slower and it works.</small></li>
+    <li><b>Post the problem, not the event</b>
+      <small>Talk about the thing your audience is stuck on. The link goes at the end,
+      once, without a pitch.</small></li>
+    <li><b>Ask each registrant to bring one person</b>
+      <small>Referral tracking is already built in, so you can see who did.</small></li>
+    <li><b>Watch the Control Room daily</b>
+      <small>Which day, which source, how many. Patterns show up faster than you expect.</small></li>
+  </ol>
+  <div class="tip"><b>Aim for 50 registrations before you pay for any.</b> If a warm
+  audience will not register free, a cold one will not register paid. Fix the page first.</div>
+</section>
+
+<!-- 14 -->
+<section class="step">
+  <div class="head"><span class="n">14</span><h2>Then paid ads</h2><span class="mins">30 min to set up</span></div>
+  <p class="where">Meta Ads Manager</p>
+  <ol class="clicks">
+    <li><b>Create a campaign, objective: Leads</b><small>Not Traffic. Traffic buys clicks.
+      Leads buys registrations, and that is what you are counting.</small></li>
+    <li><b>Set the conversion event to Lead</b><small>The one you watched fire in step 12.</small></li>
+    <li><b>Start with one audience and a small daily budget</b>
+      <small>Broad targeting in your country, your age range. Let the pixel find people.
+      Narrow targeting starves it of data.</small></li>
+    <li><b>Write three different hooks, same offer</b>
+      <small>One naming the pain, one naming the outcome, one asking a question.
+      You are testing which problem people react to.</small></li>
+    <li><b>Leave it alone for three days</b><small>Editing daily resets the learning and
+      wastes the spend that bought it.</small></li>
+    <li><b>Then judge on cost per registration</b>
+      <small>Not on clicks, not on reach. Registrations, and how many showed up.</small></li>
+  </ol>
+  <div class="warn"><b>The number that matters is show-up rate, not registrations.</b> A
+  hundred registrations with fifteen attending is worse than forty with twenty-five.
+  Everything in Part 2 exists for that number.</div>
+</section>
+
+<section class="step">
+  <div class="head"><span class="n">&rarr;</span><h2>What comes after this</h2></div>
+  <div class="soon">
+    <span class="tag">Next stage</span>
+    <h3>WhatsApp reminders</h3>
+    <p>For most audiences this beats email. The tables, the sending code and the schedule
+    are already built and switched off. It needs a WhatsApp Business provider plus message
+    templates approved by Meta in advance, which takes days rather than minutes. That is
+    why it is its own stage. A separate guide covers it.</p>
+  </div>
+  <div class="soon">
+    <span class="tag">Next stage</span>
+    <h3>The 11 day follow up</h3>
+    <p>The emails around the event are built. A longer sequence for people who registered
+    and never came, or came and did not act, is the next thing worth writing.</p>
+  </div>
+  <div class="soon">
+    <span class="tag">Next stage</span>
+    <h3>Your own dashboard</h3>
+    <p>Every registration and sale already fires an event, and the funnel can post those
+    anywhere you point it. Deliberately not connected. When you have somewhere for them to
+    go, it is one setting.</p>
+  </div>
+</section>
+
+<div class="check">
+  <h2>The whole thing, checked</h2>
+  <ol>
+    <li><div><b>Your site shows your words, not PLACEHOLDER</b><small>Search the live page for it.</small></div></li>
+    <li><div><b>You registered on it yourself</b><small>Three steps, then the next page.</small></div></li>
+    <li><div><b>The Control Room lists you</b><small>With the two answers you picked.</small></div></li>
+    <li><div><b>Your confirmation email arrived</b><small>Within about five minutes.</small></div></li>
+    <li><div><b>A Lead event showed in Events Manager</b><small>Only if you are running ads.</small></div></li>
+    <li><div><b>The reminder call reached you</b><small>Only if you set up Part 2.</small></div></li>
+  </ol>
+</div>
+
+<footer>
+  <span>The Funnel Protocol &middot; Cheat sheet</span>
+  <span>Build &rarr; Call &rarr; Traffic</span>
+</footer>
+
+</div>
+
+<script>
+document.querySelectorAll(".copy").forEach(function(b){
+  b.addEventListener("click",function(){
+    var p=b.parentElement.nextElementSibling;
+    navigator.clipboard.writeText(p.innerText).then(function(){
+      b.textContent="Copied";b.classList.add("ok");
+      setTimeout(function(){b.textContent="Copy";b.classList.remove("ok")},1800);
+    });
+  });
+});
+</script>
